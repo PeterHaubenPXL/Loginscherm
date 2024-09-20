@@ -1,0 +1,21 @@
+﻿<Window x:Class="Cirkelberekening.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Cirkelberekening"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Label Content="Straal (in cm)" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="127,77,0,0" VerticalAlignment="Top" Width="156"/>
+        <Label Content="Omtrek (in cm)" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="127,144,0,0" VerticalAlignment="Top" Width="156"/>
+        <Label Content="Oppervlakte (in cm²)" HorizontalAlignment="Left"  HorizontalContentAlignment="Right" Margin="127,210,0,0" VerticalAlignment="Top" Width="156"/>
+        <TextBox Name ="radiusTxt" HorizontalAlignment="Left" Margin="309,85,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"/>
+        <TextBox Name ="circumferenceTxt" HorizontalAlignment="Left" Margin="309,152,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
+        <TextBox Name ="surfaceTxt" HorizontalAlignment="Left" Margin="309,214,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"  IsEnabled="False" Height="27"/>
+        <Button Name="calculateBtn" Click="calculateBtn_Click" Content="Bereken" HorizontalAlignment="Left" Margin="487,121,0,0" VerticalAlignment="Top" Width="153"/>
+        <Button Name="clearBtn" Click="clearBtn_Click" Content="Wissen" HorizontalAlignment="Left" Margin="487,188,0,0" VerticalAlignment="Top" Width="153"/>
+
+
+    </Grid>
+</Window>
