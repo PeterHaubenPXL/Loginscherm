@@ -3,7 +3,7 @@
 Console.Write("Geef een getal in: ");
 double getal1 = Convert.ToDouble(Console.ReadLine());
 
-Console.Write("Geef nog een getal in");
+Console.Write("Geef nog een getal in: ");
 double getal2 = Convert.ToDouble(Console.ReadLine());
 
 Console.WriteLine();
@@ -26,5 +26,6 @@ Console.Write("Het quotient = ");
 Double quotient = getal1 / getal2;
 Console.WriteLine(quotient);
 
-Console.WriteLine("----------------------");
+Console.WriteLine();
+Console.WriteLine("------------------------");
 Console.Read();

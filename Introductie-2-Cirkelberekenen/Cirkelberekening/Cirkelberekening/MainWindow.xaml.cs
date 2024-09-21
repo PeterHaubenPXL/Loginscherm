@@ -22,6 +22,8 @@ namespace Cirkelberekening
         public MainWindow()
         {
             InitializeComponent();
+
+            clearBtn_Click(null, null);
         }
 
         private void calculateBtn_Click(object sender, RoutedEventArgs e)
@@ -42,12 +44,12 @@ namespace Cirkelberekening
             radiusTxt.Text = "0";
             surfaceTxt.Text = "0";
 
+            // Focus Input Txt-field
+            radiusTxt.Focus();
+            radiusTxt.SelectAll();
+
         }
 
-        private void radiusTxt_IsKeyboardFocusedChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-
-        }
     }
 
 }
