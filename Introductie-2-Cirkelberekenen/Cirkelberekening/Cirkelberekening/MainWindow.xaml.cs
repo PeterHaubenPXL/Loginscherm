@@ -31,18 +31,18 @@ namespace Cirkelberekening
             // Input user 
             double radius = Convert.ToDouble(radiusTxt.Text);
             
-            double surface = PI * radius * radius;
+            double surface = Math.PI * radius * radius;
             surfaceTxt.Text = Math.Round(surface, 2).ToString() + " cm²";
             
-            double circumference = 2 * PI * radius;
+            double circumference = 2 * Math.PI * radius;
             circumferenceTxt.Text = Math.Round(circumference, 2).ToString() + " cm";
         }
 
         private void clearBtn_Click(object sender, RoutedEventArgs e)
         {
-            circumferenceTxt.Text = "0";
-            radiusTxt.Text = "0";
-            surfaceTxt.Text = "0";
+            circumferenceTxt.Text = "0 cm";
+            radiusTxt.Text = "0 cm";
+            surfaceTxt.Text = "0 cm²";
 
             // Focus Input Txt-field
             radiusTxt.Focus();
