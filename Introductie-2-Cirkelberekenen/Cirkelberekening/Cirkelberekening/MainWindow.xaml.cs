@@ -23,6 +23,7 @@ namespace Cirkelberekening
         {
             InitializeComponent();
 
+            // 
             clearBtn_Click(null, null);
         }
 
@@ -31,6 +32,7 @@ namespace Cirkelberekening
             // Input user 
             double radius = Convert.ToDouble(radiusTxt.Text);
             
+            // Berekeningen & Tonen
             double surface = Math.PI * radius * radius;
             surfaceTxt.Text = Math.Round(surface, 2).ToString() + " cm²";
             
