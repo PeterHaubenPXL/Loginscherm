@@ -1,26 +1,39 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-string groet = @"-----------------------------------
-|                                 |
-| Welkom bij Ethias Administratie |
-|                                 |
------------------------------------";
+string groet = @"  -----------------------------------
+  |                                 |
+  | Welkom bij Ethias Administratie |
+  |                                 |
+  -----------------------------------
+
+       |\_/|
+       | @ @  Welkom bij Ethias regestratie
+       |   <>              _
+       |  -/\-----____  ((| |))
+       |              `\__| |
+   ____|_       ___|   |____|
+  /_/_____/____/_______|
+
+";
 
 Console.WriteLine(groet);
 Console.WriteLine();
+
 Console.WriteLine("Geef de achternaam in van de klant: ");
-string Achternaam = Console.ReadLine();
+string surname = Console.ReadLine();
+
 Console.WriteLine("Geef de voornaam in van de klant: ");
-string Voornaam = Console.ReadLine();
+string name = Console.ReadLine();
+
 Console.WriteLine("Geef de leeftijd in van de klant: ");
-bool resultaat = int.TryParse(Console.ReadLine(), out int cijfer);
+bool result = int.TryParse(Console.ReadLine(), out int age);
 
 Console.WriteLine("Geef aan of de klant een man is(true /false): ");
-resultaat = Boolean.TryParse(Console.ReadLine(), out bool isMan);
+result = Boolean.TryParse(Console.ReadLine(), out bool isMan);
 
 Console.WriteLine();
 Console.WriteLine("----------------------------------");
 Console.WriteLine("Ingevulde gegevens");
-Console.WriteLine($"Achternaam: {Achternaam} - Voornaam: {Voornaam} - Leeftijd: {cijfer} - Man: {isMan}");
+Console.WriteLine($"Achternaam: {surname} - Voornaam: {name} - Leeftijd: {age} - Man: {isMan}");
 
 
