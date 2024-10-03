@@ -9,7 +9,7 @@ Console.Write("Hoeveeel levenspunten heeft de ridder: ");
 
 bool isResult = int.TryParse(Console.ReadLine(), out int knightHealth);
 
-if (!(knightHealth >= 0 && knightHealth <= 100))
+if (knightHealth > 100 || knightHealth <= 0)
 {
     knightHealth = 100;
 }
@@ -25,12 +25,14 @@ for (int i = 1; i < 5; i++)
         case 1:
             knightHealth = knightHealth - attackGoblin;
             goblinHealth = goblinHealth + 1;
+            Console.WriteLine();
             Console.WriteLine("Goblin attacked Knight");
             Console.WriteLine();
             break;
         case 2:
             knightHealth = knightHealth + 2;
             goblinHealth = goblinHealth - attackKnight;
+            Console.WriteLine();
             Console.WriteLine("Knight attacked goblin");
             Console.WriteLine();
             break;
@@ -40,29 +42,20 @@ for (int i = 1; i < 5; i++)
             break;
     }
 
-    string result = (knightHealth <= 0) ? $"De ridder is dood" :
+    string result = (knightHealth <= 0) ? $"Game over, je ridder is dood" :
                       $"de ridder heeft {knightHealth} levenspunten";
 
     Console.WriteLine(result);
 
-    result = (goblinHealth <= 0) ? $"De goblin is dood" :
+    result = (goblinHealth <= 0) ? $"Je bent gewonnen - De Goblin is dood -" :
                           $"de goblin heeft {goblinHealth} levenspunten";
 
     Console.WriteLine(result);
 
-    if(goblinHealth<=0)
+    if (knightHealth <= 0 || goblinHealth <= 0)
     {
-        Console.WriteLine("Je bent gewonnen - De Goblin is dood -");
         break;
     }
-    else if(knightHealth<=0)
-    {
-        Console.WriteLine("Game over, je ridder is dood");
-        break;
-    }
-
 }
 
-
-
-Console.ReadLine();
+//Console.ReadLine();
