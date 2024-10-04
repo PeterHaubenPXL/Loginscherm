@@ -14,9 +14,9 @@ if (knightHealth > 100 || knightHealth <= 0)
     knightHealth = 100;
 }
 
-for (int i = 1; i < 5; i++)
+while (knightHealth > 0 && goblinHealth > 0)
 {
-    Console.Write("Geef een geldige actie in (1/2): Actie ",i);
+    Console.Write("Geef een geldige actie in (1/2): Actie ", i);
 
     isResult = int.TryParse(Console.ReadLine(), out int actionPlayer);
 
@@ -42,7 +42,7 @@ for (int i = 1; i < 5; i++)
             break;
     }
 
-    string result = (knightHealth <= 0) ? $"Game over, je ridder is dood" :
+    string result = (knightHealth <= 0) ? $"Game over - je ridder is dood -" :
                       $"de ridder heeft {knightHealth} levenspunten";
 
     Console.WriteLine(result);
@@ -52,10 +52,6 @@ for (int i = 1; i < 5; i++)
 
     Console.WriteLine(result);
 
-    if (knightHealth <= 0 || goblinHealth <= 0)
-    {
-        break;
-    }
 }
 
 //Console.ReadLine();
