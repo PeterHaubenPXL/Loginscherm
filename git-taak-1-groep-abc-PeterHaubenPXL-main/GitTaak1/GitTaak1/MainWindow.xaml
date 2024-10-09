@@ -6,13 +6,20 @@
         xmlns:local="clr-namespace:GitTaak1"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
-        Name="mainWindow">
+        Name="mainWindow"
+        Background="LightGray">
     <Grid>
-        <Image MouseLeave="cleanImage_MouseLeave" MouseEnter="blueImage_MouseEnter" Name="blueImage" Source="/Blauw.png" HorizontalAlignment="Left" Height="100" Margin="118,97,0,0" VerticalAlignment="Top" Width="100"/>
-        <Image MouseLeave="cleanImage_MouseLeave"  MouseEnter="greenImage_MouseEnter"  Name="greenImage" HorizontalAlignment="Left" Height="100" Margin="288,97,0,0" VerticalAlignment="Top" Width="100" RenderTransformOrigin="-0.363,-0.18" Source="/Groen.png"/>
-        <Image MouseLeave="cleanImage_MouseLeave"  MouseEnter="yellowImage_MouseEnter"  Name="yelloweImage" Source="/Geel.png" HorizontalAlignment="Left" Height="100" Margin="118,214,0,0" VerticalAlignment="Top" Width="100"/>
-        <Image MouseLeave="cleanImage_MouseLeave"  MouseEnter="redImage_MouseEnter" x:Name="redImage" Source="/Rood.png" HorizontalAlignment="Left" Height="100" Margin="288,214,0,0" VerticalAlignment="Top" Width="100"/>
+
+        <Image MouseLeave="cleanImage_MouseLeave" MouseEnter="blueImage_MouseEnter" Name="blueImage" Source="/Blauw.png" HorizontalAlignment="Left" Height="100" Margin="300,214,0,0" VerticalAlignment="Top" Width="100"/>
+        <Image MouseLeave="cleanImage_MouseLeave"  MouseEnter="greenImage_MouseEnter"  Name="greenImage" HorizontalAlignment="Left" Height="100" Margin="118,214,0,0" VerticalAlignment="Top" Width="100" RenderTransformOrigin="-0.363,-0.18" Source="/Groen.png"/>
+        <Image MouseLeave="cleanImage_MouseLeave"  MouseEnter="yellowImage_MouseEnter"  Name="yelloweImage" Source="/Geel.png" HorizontalAlignment="Left" Height="100" Margin="300,97,0,0" VerticalAlignment="Top" Width="100"/>
+        <Image MouseLeave="cleanImage_MouseLeave"  MouseEnter="redImage_MouseEnter" x:Name="redImage" Source="/Rood.png" HorizontalAlignment="Left" Height="100" Margin="118,97,0,0" VerticalAlignment="Top" Width="100"/>
         <Image HorizontalAlignment="Left" Height="100" Margin="673,31,0,0" VerticalAlignment="Top" Width="100" Source="/PXL.png"/>
+        <TextBlock HorizontalAlignment="Left" Margin="54,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="30" Width="228"><Run Language="nl-be" Text="Kleurenpsychologie"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="54,327,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="30" Width="100"><Run Language="nl-be" Text="Kleurcode: "/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="54,362,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="30" Width="100"><Run Language="nl-be" Text="Informatie"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="196,327,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="247"/>
+        <TextBlock HorizontalAlignment="Left" Margin="196,362,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="247"/>
 
     </Grid>
 </Window>

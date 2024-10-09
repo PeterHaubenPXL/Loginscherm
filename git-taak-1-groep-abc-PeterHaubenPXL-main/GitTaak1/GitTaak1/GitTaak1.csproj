@@ -12,7 +12,6 @@
     <None Remove="Blauw.png" />
     <None Remove="Geel.png" />
     <None Remove="Groen.png" />
-    <None Remove="PXL.png" />
     <None Remove="Rood.png" />
   </ItemGroup>
 
@@ -20,7 +19,6 @@
     <Resource Include="Blauw.png" />
     <Resource Include="Geel.png" />
     <Resource Include="Groen.png" />
-    <Resource Include="PXL.png" />
     <Resource Include="Rood.png" />
   </ItemGroup>
 

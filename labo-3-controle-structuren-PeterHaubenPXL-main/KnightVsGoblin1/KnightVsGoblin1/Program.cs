@@ -16,7 +16,7 @@ if (knightHealth > 100 || knightHealth <= 0)
 
 while (knightHealth > 0 && goblinHealth > 0)
 {
-    Console.Write("Geef een geldige actie in (1/2): Actie ", i);
+    Console.Write("Geef een geldige actie in (1/2): ");
 
     isResult = int.TryParse(Console.ReadLine(), out int actionPlayer);
 
