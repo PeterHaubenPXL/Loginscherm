@@ -23,6 +23,7 @@ namespace Login_scherm
 
         private void LogInButton_Click(object sender, RoutedEventArgs e)
         {
+
             if (NameTextBox.Text.Equals("admin") && PasswordTextBox.Password.Equals("admin"))
             {
                 InfoTextBlock.Text = "U wordt ingelogd.";
