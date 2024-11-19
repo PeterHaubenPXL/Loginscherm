@@ -1,0 +1,102 @@
+﻿<Window x:Class="Lotto.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lotto"
+        mc:Ignorable="d"
+        FontSize="20"
+        Title="LOTTO Genereren" Height="720" Width="600">
+    <Grid Name="GrdMain">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="10"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Button Grid.Column="1" Grid.ColumnSpan="6" Grid.Row="17" Content="Genereren"
+                Name ="btnGenereren" Margin="5" FontSize="20" Padding="3"
+                Click="btnGenereren_Click" Cursor="Hand"></Button>
+        <Label Content="" HorizontalContentAlignment="Center"  VerticalAlignment="Center" 
+               Name = "lbl01" Grid.Column="7" Grid.Row="3"
+               Width="40"  FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+               Name = "lbl02" Grid.Column="7" Grid.Row="4"
+               Width="40"  FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+               Name = "lbl03" Grid.Column="7" Grid.Row="5"
+               Width="40" FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+               Name = "lbl04" Grid.Column="7" Grid.Row="6"
+               Width="40" FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+               Name = "lbl05" Grid.Column="7" Grid.Row="7"
+               Width="40" FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+               Name = "lbl06" Grid.Column="7" Grid.Row="8"
+               Width="40" FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+               Name = "lbl07" Grid.Column="7" Grid.Row="9"
+               Width="40" FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+               Name = "lbl08" Grid.Column="7" Grid.Row="10"
+               Width="40" FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+               Name = "lbl09" Grid.Column="7" Grid.Row="11"
+               Width="40" FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+               Name = "lbl10" Grid.Column="7" Grid.Row="12"
+               Width="40"  FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+               Name = "lbl11" Grid.Column="7" Grid.Row="13"
+               Width="40" FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center"  VerticalAlignment="Center"
+               Name = "lbl12" Grid.Column="7" Grid.Row="14"
+               Width="40" FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center"  VerticalAlignment="Center"
+               Name = "lbl13" Grid.Column="7" Grid.Row="15"
+               Width="40" FontWeight="Bold"/>
+        <Label Content="" HorizontalContentAlignment="Center"  VerticalAlignment="Center"
+               Name = "lbl14" Grid.Column="7" Grid.Row="16"
+               Width="40" FontWeight="Bold"/>
+        <CheckBox Grid.Column="7" Grid.ColumnSpan="2" Content="Vaste Nummers" HorizontalAlignment="Left" 
+                  Grid.Row="17" Margin="7,0,0,0"
+                  Name="chkVasteNummers" Click="chkVasteNummers_Click"
+                  IsChecked="false" VerticalContentAlignment="Center"/>
+        <CheckBox Grid.Column="7" Grid.ColumnSpan="2" Content="Getrokken Gen" HorizontalAlignment="Left" 
+                  Grid.Row="18" Margin="7,0,0,0"
+                  Name="chkGetrokkenGen"
+                  VerticalContentAlignment="Center"/>
+        <Label Content="" HorizontalAlignment="Left" Grid.Row="18" Grid.Column="1"
+               Name="lblHidden" MouseDoubleClick="lblHidden_MouseDoubleClick"
+               Height="40" Width="40"/>
+    </Grid>
+</Window>

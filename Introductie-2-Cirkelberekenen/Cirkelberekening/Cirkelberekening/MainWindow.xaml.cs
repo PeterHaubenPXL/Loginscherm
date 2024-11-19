@@ -23,7 +23,6 @@ namespace Cirkelberekening
         {
             InitializeComponent();
 
-            // 
             clearBtn_Click(null, null);
         }
 
