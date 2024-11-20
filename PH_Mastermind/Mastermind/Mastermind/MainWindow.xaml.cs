@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Diagnostics.Metrics;
+using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -78,6 +80,7 @@ namespace Mastermind
             timer.Interval = new TimeSpan(0, 0, 15); // Voorlopig op 15 seconden gezet
             timer.Tick += Timer_Tick;
             debugStackPanel.Visibility = Visibility.Hidden;
+
             generateLabels();
         }
 
@@ -97,7 +100,7 @@ namespace Mastermind
                         lbl.Width = 54;
                         lbl.Height = 54;
                         lbl.Margin = new Thickness(8);
-                        
+
                         lbl.MouseDown += Label_MouseDown;
 
                         Grid.SetRow(lbl, i);
@@ -136,13 +139,10 @@ namespace Mastermind
                         lbl.Name = $"serie{i - 2}{j - 1}";
                         lbl.Width = 54;
                         lbl.Height = 54;
-                        lbl.Margin = new Thickness(8);
                         lbl.ToolTip = lbl.Name;
                         lbl.Background = Brushes.Gray;
-                        lbl.BorderThickness = new Thickness(5);
+                        lbl.BorderThickness = new Thickness(8);
                         lbl.BorderBrush = Brushes.Transparent;
-
-                        lbl.MouseDown += Label_MouseDown;
 
                         if (j == 1)
                         {
@@ -151,6 +151,15 @@ namespace Mastermind
                             lbl.HorizontalContentAlignment = HorizontalAlignment.Center;
                             lbl.VerticalContentAlignment = VerticalAlignment.Center;
                             lbl.Background = Brushes.White;
+
+                            lbl.MouseDown += Series_MouseDown;
+                            lbl.MouseDoubleClick += Series_MouseDoubleClick;
+                        }
+                        else
+                        {
+                            lbl.Margin = new Thickness(8);
+                            lbl.MouseDown += Label_MouseDown;
+                            lbl.MouseDoubleClick += Label_MouseDoubleClick;
                         }
 
                         Grid.SetRow(lbl, i);
@@ -195,8 +204,589 @@ namespace Mastermind
         }
 
 
+        private void Label_MouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is Label lbl)
+            {
+                int counter;
+                int counter2;
+                string temp = lbl.Name;
+                temp = temp.Substring(temp.Length-1, 1);
+                counter = Convert.ToInt32(temp);
+
+                if (serie10StackPanel.Visibility == Visibility.Visible)
+                {
+                    counter2 = 0;
+                    foreach (var item2 in serie9StackPanel.Children)
+                    {
+                        if (item2 is Label lbl2 && counter2 > 0)
+                        {
+                            if (counter2 == counter)
+                            {
+                                lbl.Background = lbl2.Background;
+                                chosenColor = lbl2.Background;
+                                GetColorCode(lbl.Name);
+                            }
+                        }
+                        counter2++;
+                    }
+                }
+                else if (serie9StackPanel.Visibility == Visibility.Visible)
+                {
+                    counter2 = 0;
+                    foreach (var item2 in serie8StackPanel.Children)
+                    {
+                        if (item2 is Label lbl2 && counter2 > 0)
+                        {
+                            if (counter2 == counter)
+                            {
+                                lbl.Background = lbl2.Background;
+                                chosenColor = lbl2.Background;
+                                GetColorCode(lbl.Name);
+                            }
+                        }
+                        counter2++;
+                    }
+                }
+                else if (serie8StackPanel.Visibility == Visibility.Visible)
+                {
+                    counter2 = 0;
+                    foreach (var item2 in serie7StackPanel.Children)
+                    {
+                        if (item2 is Label lbl2 && counter2 > 0)
+                        {
+                            if (counter2 == counter)
+                            {
+                                lbl.Background = lbl2.Background;
+                                chosenColor = lbl2.Background;
+                                GetColorCode(lbl.Name);
+                            }
+                        }
+                        counter2++;
+                    }
+                }
+                else if (serie7StackPanel.Visibility == Visibility.Visible)
+                {
+                    counter2 = 0;
+                    foreach (var item2 in serie6StackPanel.Children)
+                    {
+                        if (item2 is Label lbl2 && counter2 > 0)
+                        {
+                            if (counter2 == counter)
+                            {
+                                lbl.Background = lbl2.Background;
+                                chosenColor = lbl2.Background;
+                                GetColorCode(lbl.Name);
+                            }
+                        }
+                        counter2++;
+                    }
+                }
+                else if (serie6StackPanel.Visibility == Visibility.Visible)
+                {
+                    counter2 = 0;
+                    foreach (var item2 in serie5StackPanel.Children)
+                    {
+                        if (item2 is Label lbl2 && counter2 > 0)
+                        {
+                            if (counter2 == counter)
+                            {
+                                lbl.Background = lbl2.Background;
+                                chosenColor = lbl2.Background;
+                                GetColorCode(lbl.Name);
+                            }
+                        }
+                        counter2++;
+                    }
+                }
+                else if (serie5StackPanel.Visibility == Visibility.Visible)
+                {
+                    counter2 = 0;
+                    foreach (var item2 in serie4StackPanel.Children)
+                    {
+                        if (item2 is Label lbl2 && counter2 > 0)
+                        {
+                            if (counter2 == counter)
+                            {
+                                lbl.Background = lbl2.Background;
+                                chosenColor = lbl2.Background;
+                                GetColorCode(lbl.Name);
+                            }
+                        }
+                        counter2++;
+                    }
+                }
+                else if (serie4StackPanel.Visibility == Visibility.Visible)
+                {
+                    counter2 = 0;
+                    foreach (var item2 in serie3StackPanel.Children)
+                    {
+                        if (item2 is Label lbl2 && counter2 > 0)
+                        {
+                            if (counter2 == counter)
+                            {
+                                lbl.Background = lbl2.Background;
+                                chosenColor = lbl2.Background;
+                                GetColorCode(lbl.Name);
+                            }
+                        }
+                        counter2++;
+                    }
+                }
+                else if (serie3StackPanel.Visibility == Visibility.Visible)
+                {
+                    counter2 = 0;
+                    foreach (var item2 in serie2StackPanel.Children)
+                    {
+                        if (item2 is Label lbl2 && counter2 > 0)
+                        {
+                            if (counter2 == counter)
+                            {
+                                lbl.Background = lbl2.Background;
+                                chosenColor = lbl2.Background;
+                                GetColorCode(lbl.Name);
+                            }
+                        }
+                        counter2++;
+                    }
+                }
+                else if (serie2StackPanel.Visibility == Visibility.Visible)
+                {
+                    counter2 = 0;
+                    foreach (var item2 in serie1StackPanel.Children)
+                    {
+                        if (item2 is Label lbl2 && counter2 > 0)
+                        {
+                            if (counter2 == counter)
+                            {
+                                lbl.Background = lbl2.Background;
+                                chosenColor = lbl2.Background;
+                                GetColorCode(lbl.Name);
+                            }
+                        }
+                        counter2++;
+                    }
+                }
+            }
+        }
+
+        private void Series_MouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            int counter;
+            int counter2;
+
+            if (serie10StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+
+                foreach (var item in serie10StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        counter2 = 0;
+                        foreach (var item2 in serie9StackPanel.Children)
+                        {
+                            if (item2 is Label lbl2 && counter2 > 0)
+                            {
+                                if (counter2 == counter)
+                                {
+                                    lbl.Background = lbl2.Background;
+                                    chosenColor = lbl2.Background;
+                                    GetColorCode(lbl.Name);
+                                }
+                            }
+                            counter2++;
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie9StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+
+                foreach (var item in serie9StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        counter2 = 0;
+                        foreach (var item2 in serie8StackPanel.Children)
+                        {
+                            if (item2 is Label lbl2 && counter2 > 0)
+                            {
+                                if (counter2 == counter)
+                                {
+                                    lbl.Background = lbl2.Background;
+                                    chosenColor = lbl2.Background;
+                                    GetColorCode(lbl.Name);
+                                }
+                            }
+                            counter2++;
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie8StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+
+                foreach (var item in serie8StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        counter2 = 0;
+                        foreach (var item2 in serie7StackPanel.Children)
+                        {
+                            if (item2 is Label lbl2 && counter2 > 0)
+                            {
+                                if (counter2 == counter)
+                                {
+                                    lbl.Background = lbl2.Background;
+                                    chosenColor = lbl2.Background;
+                                    GetColorCode(lbl.Name);
+                                }
+                            }
+                            counter2++;
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie7StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+
+                foreach (var item in serie7StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        counter2 = 0;
+                        foreach (var item2 in serie6StackPanel.Children)
+                        {
+                            if (item2 is Label lbl2 && counter2 > 0)
+                            {
+                                if (counter2 == counter)
+                                {
+                                    lbl.Background = lbl2.Background;
+                                    chosenColor = lbl2.Background;
+                                    GetColorCode(lbl.Name);
+                                }
+                            }
+                            counter2++;
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie6StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+
+                foreach (var item in serie6StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        counter2 = 0;
+                        foreach (var item2 in serie5StackPanel.Children)
+                        {
+                            if (item2 is Label lbl2 && counter2 > 0)
+                            {
+                                if (counter2 == counter)
+                                {
+                                    lbl.Background = lbl2.Background;
+                                    chosenColor = lbl2.Background;
+                                    GetColorCode(lbl.Name);
+                                }
+                            }
+                            counter2++;
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie5StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+
+                foreach (var item in serie5StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        counter2 = 0;
+                        foreach (var item2 in serie4StackPanel.Children)
+                        {
+                            if (item2 is Label lbl2 && counter2 > 0)
+                            {
+                                if (counter2 == counter)
+                                {
+                                    lbl.Background = lbl2.Background;
+                                    chosenColor = lbl2.Background;
+                                    GetColorCode(lbl.Name);
+                                }
+                            }
+                            counter2++;
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie4StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+
+                foreach (var item in serie4StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        counter2 = 0;
+                        foreach (var item2 in serie3StackPanel.Children)
+                        {
+                            if (item2 is Label lbl2 && counter2 > 0)
+                            {
+                                if (counter2 == counter)
+                                {
+                                    lbl.Background = lbl2.Background;
+                                    chosenColor = lbl2.Background;
+                                    GetColorCode(lbl.Name);
+                                }
+                            }
+                            counter2++;
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie3StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+
+                foreach (var item in serie3StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        counter2 = 0;
+                        foreach (var item2 in serie2StackPanel.Children)
+                        {
+                            if (item2 is Label lbl2 && counter2 > 0)
+                            {
+                                if (counter2 == counter)
+                                {
+                                    lbl.Background = lbl2.Background;
+                                    chosenColor = lbl2.Background;
+                                    GetColorCode(lbl.Name);
+                                }
+                            }
+                            counter2++;
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie2StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+
+                foreach (var item in serie2StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        counter2 = 0;
+                        foreach (var item2 in serie1StackPanel.Children)
+                        {
+                            if (item2 is Label lbl2 && counter2 > 0)
+                            {
+                                if (counter2 == counter)
+                                {
+                                    lbl.Background = lbl2.Background;
+                                    chosenColor = lbl2.Background;
+                                    GetColorCode(lbl.Name);
+                                }
+                            }
+                            counter2++;
+                        }
+                    }
+                    counter++;
+                }
+            }
+        }
+
+        private void Series_MouseDown(object sender, RoutedEventArgs e)
+        {
+            if (chosenColor == Brushes.Transparent)
+            {
+                chosenColor = Brushes.Red;
+            }
+            int counter = 0;
+            if (serie10StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+                foreach (var item in serie10StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        if (lbl.Background == Brushes.Gray)
+                        {
+                            lbl.Background = chosenColor;
+                            GetColorCode(lbl.Name);
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie9StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+                foreach (var item in serie9StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        if (lbl.Background == Brushes.Gray)
+                        {
+                            lbl.Background = chosenColor;
+                            GetColorCode(lbl.Name);
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie8StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+                foreach (var item in serie8StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        if (lbl.Background == Brushes.Gray)
+                        {
+                            lbl.Background = chosenColor;
+                            GetColorCode(lbl.Name);
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie7StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+                foreach (var item in serie7StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        if (lbl.Background == Brushes.Gray)
+                        {
+                            lbl.Background = chosenColor;
+                            GetColorCode(lbl.Name);
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie6StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+                foreach (var item in serie6StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        if (lbl.Background == Brushes.Gray)
+                        {
+                            lbl.Background = chosenColor;
+                            GetColorCode(lbl.Name);
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie5StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+                foreach (var item in serie5StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        if (lbl.Background == Brushes.Gray)
+                        {
+                            lbl.Background = chosenColor;
+                            GetColorCode(lbl.Name);
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie4StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+                foreach (var item in serie4StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        if (lbl.Background == Brushes.Gray)
+                        {
+                            lbl.Background = chosenColor;
+                            GetColorCode(lbl.Name);
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie3StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+                foreach (var item in serie3StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        if (lbl.Background == Brushes.Gray)
+                        {
+                            lbl.Background = chosenColor;
+                            GetColorCode(lbl.Name);
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie2StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+                foreach (var item in serie2StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        if (lbl.Background == Brushes.Gray)
+                        {
+                            lbl.Background = chosenColor;
+                            GetColorCode(lbl.Name);
+                        }
+                    }
+                    counter++;
+                }
+            }
+            else if (serie1StackPanel.Visibility == Visibility.Visible)
+            {
+                counter = 0;
+                foreach (var item in serie1StackPanel.Children)
+                {
+                    if (item is Label lbl && counter > 0)
+                    {
+                        if (lbl.Background == Brushes.Gray)
+                        {
+                            lbl.Background = chosenColor;
+                            GetColorCode(lbl.Name);
+                        }
+                    }
+                    counter++;
+                }
+            }
+        }
+
         private void Label_MouseDown(object sender, RoutedEventArgs e)
         {
+            if (chosenColor == Brushes.Transparent)
+            {
+                chosenColor = Brushes.Red;
+            }
+
             if (sender is Label lbl)
             {
                 if (lbl.Name.Contains("colorLabel"))
@@ -375,6 +965,8 @@ namespace Mastermind
             }
         }
 
+        string codeString = "";
+
         private void newGameButton_Click(object sender, RoutedEventArgs e)
         {
             // Code genereren
@@ -400,31 +992,39 @@ namespace Mastermind
             chosenColorCode3 = 0;
             chosenColorCode4 = 0;
 
+            chosenColor = Brushes.Transparent;
+
             switch (colorCode1 % 6)
             {
                 case 0:
                     debugLabel1.Background = Brushes.Red;
                     colorCode1 = 1;
+                    codeString = "Red, ";
                     break;
                 case 1:
                     debugLabel1.Background = Brushes.Yellow;
                     colorCode1 = 2;
+                    codeString = "Yellow, ";
                     break;
                 case 2:
                     debugLabel1.Background = Brushes.Orange;
                     colorCode1 = 3;
+                    codeString = "Orange, ";
                     break;
                 case 3:
                     debugLabel1.Background = Brushes.White;
                     colorCode1 = 4;
+                    codeString = "White, ";
                     break;
                 case 4:
                     debugLabel1.Background = Brushes.Green;
                     colorCode1 = 5;
+                    codeString = "Green, ";
                     break;
                 case 5:
                     debugLabel1.Background = Brushes.Blue;
                     colorCode1 = 6;
+                    codeString = "Blue, ";
                     break;
             }
 
@@ -433,26 +1033,32 @@ namespace Mastermind
                 case 0:
                     debugLabel2.Background = Brushes.Red;
                     colorCode2 = 1;
+                    codeString += "Red, ";
                     break;
                 case 1:
                     debugLabel2.Background = Brushes.Yellow;
                     colorCode2 = 2;
+                    codeString += "Yellow, ";
                     break;
                 case 2:
                     debugLabel2.Background = Brushes.Orange;
                     colorCode2 = 3;
+                    codeString += "Orange, ";
                     break;
                 case 3:
                     debugLabel2.Background = Brushes.White;
                     colorCode2 = 4;
+                    codeString += "White, ";
                     break;
                 case 4:
                     debugLabel2.Background = Brushes.Green;
                     colorCode2 = 5;
+                    codeString += "Green, ";
                     break;
                 case 5:
                     debugLabel2.Background = Brushes.Blue;
                     colorCode2 = 6;
+                    codeString += "Blue, ";
                     break;
             }
 
@@ -461,26 +1067,32 @@ namespace Mastermind
                 case 0:
                     debugLabel3.Background = Brushes.Red;
                     colorCode3 = 1;
+                    codeString += "Red, ";
                     break;
                 case 1:
                     debugLabel3.Background = Brushes.Yellow;
                     colorCode3 = 2;
+                    codeString += "Yellow, ";
                     break;
                 case 2:
                     debugLabel3.Background = Brushes.Orange;
                     colorCode3 = 3;
+                    codeString += "Orange, ";
                     break;
                 case 3:
                     debugLabel3.Background = Brushes.White;
                     colorCode3 = 4;
+                    codeString += "White, ";
                     break;
                 case 4:
                     debugLabel3.Background = Brushes.Green;
                     colorCode3 = 5;
+                    codeString += "Green, ";
                     break;
                 case 5:
                     debugLabel3.Background = Brushes.Blue;
                     colorCode3 = 6;
+                    codeString += "Blue, ";
                     break;
             }
 
@@ -489,32 +1101,38 @@ namespace Mastermind
                 case 0:
                     debugLabel4.Background = Brushes.Red;
                     colorCode4 = 1;
+                    codeString += "Red";
                     break;
                 case 1:
                     debugLabel4.Background = Brushes.Yellow;
                     colorCode4 = 2;
+                    codeString += "Yellow";
                     break;
                 case 2:
                     debugLabel4.Background = Brushes.Orange;
                     colorCode4 = 3;
+                    codeString += "Orange";
                     break;
                 case 3:
                     debugLabel4.Background = Brushes.White;
                     colorCode4 = 4;
+                    codeString += "White";
                     break;
                 case 4:
                     debugLabel4.Background = Brushes.Green;
                     colorCode4 = 5;
+                    codeString += "Green";
                     break;
                 case 5:
                     debugLabel4.Background = Brushes.Blue;
                     colorCode4 = 6;
+                    codeString += "Blue";
                     break;
             }
 
             foreach (var item in serie1StackPanel.Children)
             {
-                if(item is Label lbl)
+                if (item is Label lbl)
                 {
                     lbl.Background = Brushes.Gray;
                     lbl.BorderBrush = Brushes.Transparent;
@@ -681,18 +1299,18 @@ namespace Mastermind
                     ChangeBorder(attempts, 4, 1);
                 }
 
-                if(colorPosition1 && colorPosition2 && colorPosition3 && colorPosition4)
+                if (colorPosition1 && colorPosition2 && colorPosition3 && colorPosition4)
                 {
-                    // Einde spel
+                    // Gewonnen spel
 
                     attempts++;
                     scoreLabel.Content = $"Poging {attempts}/10 Score = {points}";
-                    //scoreLabel.Visibility = Visibility.Visible;
+                    debugStackPanel.Visibility = Visibility.Visible;
 
-                    MessageBoxResult result = MessageBox.Show($"Code is gekraakt in {attempts} pogingen. Wil je nog eens?","WINNER",MessageBoxButton.YesNo,MessageBoxImage.Information);
+                    MessageBoxResult result = MessageBox.Show($"Code is gekraakt in {attempts} pogingen. Wil je nog eens?", "WINNER", MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (result == MessageBoxResult.Yes)
                     {
-                        newGameButton_Click(null,null);
+                        newGameButton_Click(null, null);
                     }
                     else
                     {
@@ -825,7 +1443,6 @@ namespace Mastermind
                     attempts++;
 
                     scoreLabel.Content = $"Poging {attempts}/10 Score = {points}";
-                    
 
                     if (attempts < 10)
                     {
@@ -835,9 +1452,9 @@ namespace Mastermind
                     }
                     else
                     {
-                        MessageBoxResult result = MessageBox.Show("You failed! De correcte code was {}.\nNog eens proberen?","FAILED",MessageBoxButton.YesNo,MessageBoxImage.Question);
+                        MessageBoxResult result = MessageBox.Show($"You failed! De correcte code was {codeString}.\nNog eens proberen?", "FAILED", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                        if(result == MessageBoxResult.Yes)
+                        if (result == MessageBoxResult.Yes)
                         {
                             newGameButton_Click(null, null);
                         }
@@ -848,7 +1465,7 @@ namespace Mastermind
                     }
                 }
             }
-                
+
 
             else
             {
@@ -911,8 +1528,6 @@ namespace Mastermind
                                             lbl.BorderBrush = Brushes.Wheat;
                                         }
                                         break;
-
-
                                 }
                             }
                         }
@@ -969,11 +1584,8 @@ namespace Mastermind
                                             lbl.BorderBrush = Brushes.Wheat;
                                         }
                                         break;
-
-
                                 }
                             }
-
                         }
                         counter++;
                     }
@@ -1028,11 +1640,8 @@ namespace Mastermind
                                             lbl.BorderBrush = Brushes.Wheat;
                                         }
                                         break;
-
-
                                 }
                             }
-
                         }
                         counter++;
                     }
