@@ -5,9 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mastermind"
         mc:Ignorable="d"
-        Title="Mastermind" Height="930" Width="550"
+        Title="Mastermind" Height="1000" Width="550"
         Loaded="Window_Loaded"
-        Background="LightGray">
+        Background="Black"
+        KeyDown="mastermindWindow_KeyDown"
+        Name="mastermindWindow">
     <Grid Name="mainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -24,22 +26,16 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="70"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <!--<RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>-->
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Click="newGameButton_Click"  FontSize="20" Name="newGameButton" Content="Nieuw spel" Margin="8" Width="150"></Button>
-            <Button Click="ControlButton_Click"  FontSize="20" Name="ControlButton" Content="Controleren" Margin="8" Width="150"></Button>
+            <Button Click="ControlButton_Click"  FontSize="20" Name="controlButton" Content="Controleren" Margin="8" Width="150"></Button>
         </StackPanel>
-        <StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6">
+        <Label Name="scoreLabel" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5" FontSize="20" HorizontalContentAlignment="Center" Content="" Background="White"></Label>
+        <StackPanel Orientation="Vertical" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="6">
             <StackPanel Name="serie1StackPanel" Orientation="Horizontal"></StackPanel>
             <StackPanel Name="serie2StackPanel" Orientation="Horizontal"></StackPanel>
             <StackPanel Name="serie3StackPanel" Orientation="Horizontal"></StackPanel>
@@ -51,6 +47,12 @@
             <StackPanel Name="serie9StackPanel" Orientation="Horizontal"></StackPanel>
             <StackPanel Name="serie10StackPanel" Orientation="Horizontal"></StackPanel>
         </StackPanel>
-
+        <!--<TextBox Name="debugTextBox" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="5" FontSize="20" HorizontalContentAlignment="Center"></TextBox>-->
+        <StackPanel Name="debugStackPanel" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Label Name="debugLabel1" Width="54" Height="54" Margin="10"></Label>
+            <Label Name="debugLabel2" Width="54" Height="54" Margin="10"></Label>
+            <Label Name="debugLabel3" Width="54" Height="54" Margin="10"></Label>
+            <Label Name="debugLabel4" Width="54" Height="54" Margin="10"></Label>
+        </StackPanel>
     </Grid>
 </Window>
