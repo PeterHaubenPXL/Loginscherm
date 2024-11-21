@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Metrics;
+﻿using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Reflection;
 using System.Text;
 using System.Windows;
@@ -35,10 +36,18 @@ namespace Mastermind
         int chosenColorCode3 = 0;
         int chosenColorCode4 = 0;
 
+        bool dissolved = false;
+        bool gameStarted = false;
+
         DispatcherTimer timer = new DispatcherTimer();
 
         int points;
         int penaltyPoints;
+
+        List<StackPanel> list = new List<StackPanel>();
+
+        string codeString = "";
+
 
         public MainWindow()
         {
@@ -49,9 +58,46 @@ namespace Mastermind
         {
             attempts++;
 
+            points -= 8;
+            scoreLabel.Content = $"Poging {attempts}/10 Score = {points}";
+
             makeStackPanelVisible();
 
+            // eerst kleuren overzetten
+            Series_MouseDoubleClick(null, null);
+
+            // Dan Resetten
+            ResetLabels();
+
             StopCountdown();
+        }
+
+        private void ResetLabels()
+        {
+            // Kleuren verloren beurt Gray maken
+
+            int counter = 0;
+
+            for (int i = list.Count - 1; i >= 1; i--)
+            {
+                if (list[i].Visibility == Visibility.Visible)
+                {
+                    counter = 0;
+                    foreach (var item in list[i-1].Children)
+                    {
+                        if (item is Label lbl)
+                        {
+                            if (counter > 0)
+                            {
+                                lbl.Background = Brushes.Gray;
+                                lbl.BorderBrush = Brushes.Transparent;
+                            }
+                        }
+                        counter++;
+                    }
+                    return;
+                }
+            }
         }
 
         private void StopCountdown()
@@ -77,9 +123,22 @@ namespace Mastermind
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            timer.Interval = new TimeSpan(0, 0, 15); // Voorlopig op 15 seconden gezet
+            mastermindWindow.Top = 40;
+            mastermindWindow.Left = 40;
+
+            timer.Interval = new TimeSpan(0, 0, 10); // Voorlopig op 15 seconden gezet
             timer.Tick += Timer_Tick;
+
             debugStackPanel.Visibility = Visibility.Hidden;
+            debugStackPanel.HorizontalAlignment = HorizontalAlignment.Center;
+
+            foreach (var item in seriesStackPanel.Children)
+            {
+                if (item is StackPanel stack)
+                {
+                    list.Add(stack);
+                }
+            }
 
             generateLabels();
         }
@@ -100,8 +159,9 @@ namespace Mastermind
                         lbl.Width = 54;
                         lbl.Height = 54;
                         lbl.Margin = new Thickness(8);
+                        lbl.BorderThickness = new Thickness(8);
 
-                        lbl.MouseDown += Label_MouseDown;
+                        lbl.MouseDown += Color_MouseDown;
 
                         Grid.SetRow(lbl, i);
                         Grid.SetColumn(lbl, j);
@@ -110,6 +170,8 @@ namespace Mastermind
                         {
                             case 1:
                                 lbl.Background = Brushes.Red;
+                                lbl.BorderBrush = lbl.Background;
+                                chosenColor = lbl.Background;
                                 break;
                             case 2:
                                 lbl.Background = Brushes.Yellow;
@@ -128,7 +190,7 @@ namespace Mastermind
                                 break;
                         }
 
-                        mainGrid.Children.Add(lbl);
+                        colorsStackPanel.Children.Add(lbl);
                     }
                 }
                 else if (i >= 3)
@@ -148,6 +210,8 @@ namespace Mastermind
                         {
                             lbl.FontSize = 28;
                             lbl.Content = (i - 2).ToString();
+                            lbl.Width = 60;
+                            lbl.Height = 60;
                             lbl.HorizontalContentAlignment = HorizontalAlignment.Center;
                             lbl.VerticalContentAlignment = VerticalAlignment.Center;
                             lbl.Background = Brushes.White;
@@ -158,6 +222,7 @@ namespace Mastermind
                         else
                         {
                             lbl.Margin = new Thickness(8);
+
                             lbl.MouseDown += Label_MouseDown;
                             lbl.MouseDoubleClick += Label_MouseDoubleClick;
                         }
@@ -206,12 +271,25 @@ namespace Mastermind
 
         private void Label_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
+            if (!gameStarted)
+            {
+                MessageBoxResult result = MessageBox.Show("Wil je een spel starten?", "Spel starten", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes); ;
+                if (result == MessageBoxResult.Yes)
+                {
+                    newGameButton_Click(null, null);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
             if (sender is Label lbl)
             {
                 int counter;
                 int counter2;
                 string temp = lbl.Name;
-                temp = temp.Substring(temp.Length-1, 1);
+                temp = temp.Substring(temp.Length - 1, 1);
                 counter = Convert.ToInt32(temp);
 
                 if (serie10StackPanel.Visibility == Visibility.Visible)
@@ -372,475 +450,162 @@ namespace Mastermind
 
         private void Series_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
+            if (!gameStarted)
+            {
+                MessageBoxResult result = MessageBox.Show("Wil je een spel starten?", "Spel starten", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes); ;
+                if (result == MessageBoxResult.Yes)
+                {
+                    newGameButton_Click(null, null);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            if (serie2StackPanel.Visibility == Visibility.Hidden)
+            {
+                return;
+            }
+
             int counter;
             int counter2;
 
-            if (serie10StackPanel.Visibility == Visibility.Visible)
+            for (int i = list.Count - 1; i >= 1; i--)
             {
-                counter = 0;
-
-                foreach (var item in serie10StackPanel.Children)
+                if (list[i].Visibility == Visibility.Visible)
                 {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        counter2 = 0;
-                        foreach (var item2 in serie9StackPanel.Children)
-                        {
-                            if (item2 is Label lbl2 && counter2 > 0)
-                            {
-                                if (counter2 == counter)
-                                {
-                                    lbl.Background = lbl2.Background;
-                                    chosenColor = lbl2.Background;
-                                    GetColorCode(lbl.Name);
-                                }
-                            }
-                            counter2++;
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie9StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
+                    counter = 0;
+                    counter2 = 0;
 
-                foreach (var item in serie9StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
+                    foreach (var item in list[i].Children)
                     {
-                        counter2 = 0;
-                        foreach (var item2 in serie8StackPanel.Children)
+                        if (item is Label lbl && counter > 0)
                         {
-                            if (item2 is Label lbl2 && counter2 > 0)
+                            counter2 = 0;
+                            foreach (var item2 in list[i - 1].Children)
                             {
-                                if (counter2 == counter)
+                                if (item2 is Label lbl2 && counter2 > 0)
                                 {
-                                    lbl.Background = lbl2.Background;
-                                    chosenColor = lbl2.Background;
-                                    GetColorCode(lbl.Name);
+                                    if (counter2 == counter)
+                                    {
+                                        lbl.Background = lbl2.Background;
+                                        chosenColor = lbl2.Background;
+                                        GetColorCode(lbl.Name);
+                                    }
                                 }
+                                counter2++;
                             }
-                            counter2++;
                         }
+                        counter++;
                     }
-                    counter++;
-                }
-            }
-            else if (serie8StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-
-                foreach (var item in serie8StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        counter2 = 0;
-                        foreach (var item2 in serie7StackPanel.Children)
-                        {
-                            if (item2 is Label lbl2 && counter2 > 0)
-                            {
-                                if (counter2 == counter)
-                                {
-                                    lbl.Background = lbl2.Background;
-                                    chosenColor = lbl2.Background;
-                                    GetColorCode(lbl.Name);
-                                }
-                            }
-                            counter2++;
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie7StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-
-                foreach (var item in serie7StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        counter2 = 0;
-                        foreach (var item2 in serie6StackPanel.Children)
-                        {
-                            if (item2 is Label lbl2 && counter2 > 0)
-                            {
-                                if (counter2 == counter)
-                                {
-                                    lbl.Background = lbl2.Background;
-                                    chosenColor = lbl2.Background;
-                                    GetColorCode(lbl.Name);
-                                }
-                            }
-                            counter2++;
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie6StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-
-                foreach (var item in serie6StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        counter2 = 0;
-                        foreach (var item2 in serie5StackPanel.Children)
-                        {
-                            if (item2 is Label lbl2 && counter2 > 0)
-                            {
-                                if (counter2 == counter)
-                                {
-                                    lbl.Background = lbl2.Background;
-                                    chosenColor = lbl2.Background;
-                                    GetColorCode(lbl.Name);
-                                }
-                            }
-                            counter2++;
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie5StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-
-                foreach (var item in serie5StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        counter2 = 0;
-                        foreach (var item2 in serie4StackPanel.Children)
-                        {
-                            if (item2 is Label lbl2 && counter2 > 0)
-                            {
-                                if (counter2 == counter)
-                                {
-                                    lbl.Background = lbl2.Background;
-                                    chosenColor = lbl2.Background;
-                                    GetColorCode(lbl.Name);
-                                }
-                            }
-                            counter2++;
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie4StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-
-                foreach (var item in serie4StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        counter2 = 0;
-                        foreach (var item2 in serie3StackPanel.Children)
-                        {
-                            if (item2 is Label lbl2 && counter2 > 0)
-                            {
-                                if (counter2 == counter)
-                                {
-                                    lbl.Background = lbl2.Background;
-                                    chosenColor = lbl2.Background;
-                                    GetColorCode(lbl.Name);
-                                }
-                            }
-                            counter2++;
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie3StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-
-                foreach (var item in serie3StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        counter2 = 0;
-                        foreach (var item2 in serie2StackPanel.Children)
-                        {
-                            if (item2 is Label lbl2 && counter2 > 0)
-                            {
-                                if (counter2 == counter)
-                                {
-                                    lbl.Background = lbl2.Background;
-                                    chosenColor = lbl2.Background;
-                                    GetColorCode(lbl.Name);
-                                }
-                            }
-                            counter2++;
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie2StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-
-                foreach (var item in serie2StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        counter2 = 0;
-                        foreach (var item2 in serie1StackPanel.Children)
-                        {
-                            if (item2 is Label lbl2 && counter2 > 0)
-                            {
-                                if (counter2 == counter)
-                                {
-                                    lbl.Background = lbl2.Background;
-                                    chosenColor = lbl2.Background;
-                                    GetColorCode(lbl.Name);
-                                }
-                            }
-                            counter2++;
-                        }
-                    }
-                    counter++;
+                    return;
                 }
             }
         }
 
         private void Series_MouseDown(object sender, RoutedEventArgs e)
         {
+            if (!gameStarted)
+            {
+                MessageBoxResult result = MessageBox.Show("Wil je een spel starten?", "Spel starten", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes); ;
+                if (result == MessageBoxResult.Yes)
+                {
+                    newGameButton_Click(null, null);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
             if (chosenColor == Brushes.Transparent)
             {
-                chosenColor = Brushes.Red;
+                // Standaard begin als er nog geen kleur gekozen is
+
+                chosenColor = Brushes.Red; 
+                chosenColor_Changed();
             }
+
             int counter = 0;
-            if (serie10StackPanel.Visibility == Visibility.Visible)
+
+            for(int i = list.Count - 1; i >= 0; i--)
             {
-                counter = 0;
-                foreach (var item in serie10StackPanel.Children)
+                if(list[i].Visibility == Visibility.Visible)
                 {
-                    if (item is Label lbl && counter > 0)
+                    counter = 0;
+                    foreach (var item in list[i].Children)
                     {
-                        if (lbl.Background == Brushes.Gray)
+                        if (item is Label lbl && counter > 0)
                         {
-                            lbl.Background = chosenColor;
-                            GetColorCode(lbl.Name);
+                            if (lbl.Background == Brushes.Gray)
+                            {
+                                lbl.Background = chosenColor;
+                                GetColorCode(lbl.Name);
+                            }
                         }
+                        counter++;
                     }
-                    counter++;
+                    return;
                 }
             }
-            else if (serie9StackPanel.Visibility == Visibility.Visible)
+        }
+
+        private void Color_MouseDown(object sender, RoutedEventArgs e)
+        {
+            if (sender is Label lbl)
             {
-                counter = 0;
-                foreach (var item in serie9StackPanel.Children)
+                string temp = lbl.Name;
+                temp = temp.Substring(temp.Length - 1, 1);
+                foreach (var item in colorsStackPanel.Children)
                 {
-                    if (item is Label lbl && counter > 0)
+                    if (item is Label lbl2)
                     {
-                        if (lbl.Background == Brushes.Gray)
+                        if (lbl2.Name.Contains(temp))
                         {
-                            lbl.Background = chosenColor;
-                            GetColorCode(lbl.Name);
+                            lbl2.BorderBrush = lbl.Background;
+                        }
+                        else
+                        {
+                            lbl2.BorderBrush = Brushes.Transparent;
                         }
                     }
-                    counter++;
                 }
-            }
-            else if (serie8StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-                foreach (var item in serie8StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        if (lbl.Background == Brushes.Gray)
-                        {
-                            lbl.Background = chosenColor;
-                            GetColorCode(lbl.Name);
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie7StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-                foreach (var item in serie7StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        if (lbl.Background == Brushes.Gray)
-                        {
-                            lbl.Background = chosenColor;
-                            GetColorCode(lbl.Name);
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie6StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-                foreach (var item in serie6StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        if (lbl.Background == Brushes.Gray)
-                        {
-                            lbl.Background = chosenColor;
-                            GetColorCode(lbl.Name);
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie5StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-                foreach (var item in serie5StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        if (lbl.Background == Brushes.Gray)
-                        {
-                            lbl.Background = chosenColor;
-                            GetColorCode(lbl.Name);
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie4StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-                foreach (var item in serie4StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        if (lbl.Background == Brushes.Gray)
-                        {
-                            lbl.Background = chosenColor;
-                            GetColorCode(lbl.Name);
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie3StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-                foreach (var item in serie3StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        if (lbl.Background == Brushes.Gray)
-                        {
-                            lbl.Background = chosenColor;
-                            GetColorCode(lbl.Name);
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie2StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-                foreach (var item in serie2StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        if (lbl.Background == Brushes.Gray)
-                        {
-                            lbl.Background = chosenColor;
-                            GetColorCode(lbl.Name);
-                        }
-                    }
-                    counter++;
-                }
-            }
-            else if (serie1StackPanel.Visibility == Visibility.Visible)
-            {
-                counter = 0;
-                foreach (var item in serie1StackPanel.Children)
-                {
-                    if (item is Label lbl && counter > 0)
-                    {
-                        if (lbl.Background == Brushes.Gray)
-                        {
-                            lbl.Background = chosenColor;
-                            GetColorCode(lbl.Name);
-                        }
-                    }
-                    counter++;
-                }
+                chosenColor = lbl.Background;
+                chosenColor_Changed();
             }
         }
 
         private void Label_MouseDown(object sender, RoutedEventArgs e)
         {
+            if (!gameStarted)
+            {
+                MessageBoxResult result = MessageBox.Show("Wil je een spel starten?", "Spel starten", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes); ;
+                if (result == MessageBoxResult.Yes)
+                {
+                    newGameButton_Click(null, null);
+                }
+                else
+                {
+                    return;
+                }
+            }
             if (chosenColor == Brushes.Transparent)
             {
                 chosenColor = Brushes.Red;
+                chosenColor_Changed();
             }
 
             if (sender is Label lbl)
             {
-                if (lbl.Name.Contains("colorLabel"))
+                if (lbl.Name.Contains("serie"))
                 {
-                    chosenColor = lbl.Background;
-                }
-                else if (lbl.Name.Contains("serie"))
-                {
-                    if (lbl.Name.Contains("serie1") && attempts == 0)
-                    {
-                        lbl.Background = chosenColor;
-                        GetColorCode(lbl.Name);
-                    }
-                    else if (lbl.Name.Contains("serie2") && attempts == 1)
-                    {
-                        lbl.Background = chosenColor;
-                        GetColorCode(lbl.Name);
-                    }
-                    else if (lbl.Name.Contains("serie3") && attempts == 2)
-                    {
-                        lbl.Background = chosenColor;
-                        GetColorCode(lbl.Name);
-                    }
-                    else if (lbl.Name.Contains("serie4") && attempts == 3)
-                    {
-                        lbl.Background = chosenColor;
-                        GetColorCode(lbl.Name);
-                    }
-                    else if (lbl.Name.Contains("serie5") && attempts == 4)
-                    {
-                        lbl.Background = chosenColor;
-                        GetColorCode(lbl.Name);
-                    }
-                    else if (lbl.Name.Contains("serie6") && attempts == 5)
-                    {
-                        lbl.Background = chosenColor;
-                        GetColorCode(lbl.Name);
-                    }
-                    else if (lbl.Name.Contains("serie7") && attempts == 6)
-                    {
-                        lbl.Background = chosenColor;
-                        GetColorCode(lbl.Name);
-                    }
-                    else if (lbl.Name.Contains("serie8") && attempts == 7)
-                    {
-                        lbl.Background = chosenColor;
-                        GetColorCode(lbl.Name);
-                    }
-                    else if (lbl.Name.Contains("serie9") && attempts == 8)
-                    {
-                        lbl.Background = chosenColor;
-                        GetColorCode(lbl.Name);
-                    }
-                    else if (lbl.Name.Contains("serie10") && attempts == 9)
+                    string temp = lbl.Name;
+                    temp = temp.Substring(temp.LastIndexOf("e") + 1);
+                    int intTemp = Convert.ToInt32(temp);
+                    intTemp = intTemp / 10;
+
+                    if (attempts == intTemp - 1)
                     {
                         lbl.Background = chosenColor;
                         GetColorCode(lbl.Name);
@@ -848,9 +613,30 @@ namespace Mastermind
                     else
                     {
                         chosenColor = lbl.Background;
+                        chosenColor_Changed();
                     }
                 }
             }
+        }
+
+        private void chosenColor_Changed()
+        {
+            foreach (var item in colorsStackPanel.Children)
+            {
+                if (item is Label lbl)
+                {
+                    if (chosenColor == lbl.Background)
+                    {
+                        lbl.BorderBrush = lbl.Background;
+                    }
+                    else
+                    {
+                        lbl.BorderBrush = Brushes.Transparent;
+                    }
+                }
+            }
+
+            controlButton.IsDefault = true;
         }
 
         private void GetColorCode(string lblName)
@@ -963,12 +749,33 @@ namespace Mastermind
                     }
                     break;
             }
-        }
 
-        string codeString = "";
+            chosenColor_Changed();
+
+        }
 
         private void newGameButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!dissolved && gameStarted)
+            {
+                MessageBoxResult result = MessageBox.Show("Wilt u het spel vroegtijdig beëindigen?", $"Poging {attempts + 1}/10", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    this.Close();
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            gameStarted = true;
+            dissolved = false;
+
+            chosenColor = Brushes.Red;
+            chosenColor_Changed();
+
             // Code genereren
 
             attempts = 0;
@@ -992,7 +799,7 @@ namespace Mastermind
             chosenColorCode3 = 0;
             chosenColorCode4 = 0;
 
-            chosenColor = Brushes.Transparent;
+            //chosenColor = Brushes.Transparent;
 
             switch (colorCode1 % 6)
             {
@@ -1130,84 +937,29 @@ namespace Mastermind
                     break;
             }
 
-            foreach (var item in serie1StackPanel.Children)
+            int counter;
+
+            foreach (var item in seriesStackPanel.Children)
             {
-                if (item is Label lbl)
+                if (item is StackPanel stack)
                 {
-                    lbl.Background = Brushes.Gray;
-                    lbl.BorderBrush = Brushes.Transparent;
-                }
-            }
-            foreach (var item in serie2StackPanel.Children)
-            {
-                if (item is Label lbl)
-                {
-                    lbl.Background = Brushes.Gray;
-                    lbl.BorderBrush = Brushes.Transparent;
-                }
-            }
-            foreach (var item in serie3StackPanel.Children)
-            {
-                if (item is Label lbl)
-                {
-                    lbl.Background = Brushes.Gray;
-                    lbl.BorderBrush = Brushes.Transparent;
-                }
-            }
-            foreach (var item in serie4StackPanel.Children)
-            {
-                if (item is Label lbl)
-                {
-                    lbl.Background = Brushes.Gray;
-                    lbl.BorderBrush = Brushes.Transparent;
-                }
-            }
-            foreach (var item in serie5StackPanel.Children)
-            {
-                if (item is Label lbl)
-                {
-                    lbl.Background = Brushes.Gray;
-                    lbl.BorderBrush = Brushes.Transparent;
-                }
-            }
-            foreach (var item in serie6StackPanel.Children)
-            {
-                if (item is Label lbl)
-                {
-                    lbl.Background = Brushes.Gray;
-                    lbl.BorderBrush = Brushes.Transparent;
-                }
-            }
-            foreach (var item in serie7StackPanel.Children)
-            {
-                if (item is Label lbl)
-                {
-                    lbl.Background = Brushes.Gray;
-                    lbl.BorderBrush = Brushes.Transparent;
-                }
-            }
-            foreach (var item in serie8StackPanel.Children)
-            {
-                if (item is Label lbl)
-                {
-                    lbl.Background = Brushes.Gray;
-                    lbl.BorderBrush = Brushes.Transparent;
-                }
-            }
-            foreach (var item in serie9StackPanel.Children)
-            {
-                if (item is Label lbl)
-                {
-                    lbl.Background = Brushes.Gray;
-                    lbl.BorderBrush = Brushes.Transparent;
-                }
-            }
-            foreach (var item in serie10StackPanel.Children)
-            {
-                if (item is Label lbl)
-                {
-                    lbl.Background = Brushes.Gray;
-                    lbl.BorderBrush = Brushes.Transparent;
+                    counter = 0;
+
+                    if (stack.Visibility == Visibility.Visible)
+                    {
+                        foreach (var item2 in stack.Children)
+                        {
+                            if (counter > 0)
+                            {
+                                if (item2 is Label lbl)
+                                {
+                                    lbl.Background = Brushes.Gray;
+                                    lbl.BorderBrush = Brushes.Transparent;
+                                }
+                            }
+                            counter++;
+                        }
+                    }
                 }
             }
 
@@ -1306,10 +1058,12 @@ namespace Mastermind
                     attempts++;
                     scoreLabel.Content = $"Poging {attempts}/10 Score = {points}";
                     debugStackPanel.Visibility = Visibility.Visible;
+                    gameStarted = false;
 
                     MessageBoxResult result = MessageBox.Show($"Code is gekraakt in {attempts} pogingen. Wil je nog eens?", "WINNER", MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (result == MessageBoxResult.Yes)
                     {
+                        dissolved = true;
                         newGameButton_Click(null, null);
                     }
                     else
@@ -1475,593 +1229,61 @@ namespace Mastermind
 
         private void ChangeBorder(int attempst, int code, int colorPositie = 0)
         {
-            int counter = 0;
-            switch (attempst)
+            int counter = 1;
+
+            foreach (var item in seriesStackPanel.Children)
             {
-                case 0:
-                    counter = 0;
-                    foreach (var item in serie1StackPanel.Children)
-                    {
-                        if (counter == code)
-                        {
-                            if (item is Label lbl)
-                            {
-                                switch (code)
-                                {
-                                    case 1:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 2:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 3:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 4:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        counter++;
-                    }
-                    break;
-                case 1:
-                    counter = 0;
-                    foreach (var item in serie2StackPanel.Children)
-                    {
-                        if (counter == code)
-                        {
-                            if (item is Label lbl)
-                            {
-                                switch (code)
-                                {
-                                    case 1:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 2:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 3:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 4:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        counter++;
-                    }
-                    break;
-                case 2:
-                    counter = 0;
-                    foreach (var item in serie3StackPanel.Children)
-                    {
-                        if (counter == code)
-                        {
-                            if (item is Label lbl)
-                            {
-                                switch (code)
-                                {
-                                    case 1:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 2:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 3:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 4:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        counter++;
-                    }
-                    break;
-                case 3:
-                    counter = 0;
-                    foreach (var item in serie4StackPanel.Children)
-                    {
-                        if (counter == code)
-                        {
-                            if (item is Label lbl)
-                            {
-                                switch (code)
-                                {
-                                    case 1:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 2:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 3:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 4:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        counter++;
-                    }
-                    break;
-                case 4:
-                    counter = 0;
-                    foreach (var item in serie5StackPanel.Children)
-                    {
-                        if (counter == code)
-                        {
-                            if (item is Label lbl)
-                            {
-                                switch (code)
-                                {
-                                    case 1:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 2:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 3:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 4:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        counter++;
-                    }
-                    break;
-                case 5:
-                    counter = 0;
-                    foreach (var item in serie6StackPanel.Children)
-                    {
-                        if (counter == code)
-                        {
-                            if (item is Label lbl)
-                            {
-                                switch (code)
-                                {
-                                    case 1:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 2:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 3:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 4:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        counter++;
-                    }
-                    break;
-                case 6:
-                    counter = 0;
-                    foreach (var item in serie7StackPanel.Children)
-                    {
-                        if (counter == code)
-                        {
-                            if (item is Label lbl)
-                            {
-                                switch (code)
-                                {
-                                    case 1:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 2:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 3:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 4:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        counter++;
-                    }
-                    break;
-                case 7:
-                    counter = 0;
-                    foreach (var item in serie8StackPanel.Children)
-                    {
-                        if (counter == code)
-                        {
-                            if (item is Label lbl)
-                            {
-                                switch (code)
-                                {
-                                    case 1:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 2:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 3:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 4:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        counter++;
-                    }
-                    break;
-                case 8:
-                    counter = 0;
-                    foreach (var item in serie9StackPanel.Children)
-                    {
-                        if (counter == code)
-                        {
-                            if (item is Label lbl)
-                            {
-                                switch (code)
-                                {
-                                    case 1:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 2:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 3:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 4:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        counter++;
-                    }
-                    break;
-                case 9:
-                    counter = 0;
-                    foreach (var item in serie10StackPanel.Children)
-                    {
-                        if (counter == code)
-                        {
-                            if (item is Label lbl)
-                            {
-                                switch (code)
-                                {
-                                    case 1:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 2:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 3:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                    case 4:
-                                        if (colorPositie == 1)
-                                        {
-                                            lbl.BorderBrush = Brushes.DarkRed;
-                                        }
-                                        else
-                                        {
-                                            lbl.BorderBrush = Brushes.Wheat;
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        counter++;
-                    }
-                    break;
-            }
-        }
-
-
-
-        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                if (item is StackPanel stack)
                 {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
+                    if (counter == attempst + 1)
                     {
-                        yield return (T)child;
-                    }
+                        int counter2 = 0;
+                        foreach (var item2 in stack.Children)
+                        {
+                            if (counter2 == code)
+                            {
+                                if (item2 is Label lbl)
+                                {
+                                    if (colorPositie == 1)
+                                    {
+                                        lbl.BorderBrush = Brushes.DarkRed;
+                                    }
+                                    else
+                                    {
+                                        lbl.BorderBrush = Brushes.Wheat;
+                                    }
+                                    return;
+                                }
 
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
+                            }
+                            counter2++;
+                        }
                     }
+                    counter++;
                 }
             }
         }
+
+
+        //public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        //{
+        //    if (depObj != null)
+        //    {
+        //        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+        //        {
+        //            DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+        //            if (child != null && child is T)
+        //            {
+        //                yield return (T)child;
+        //            }
+
+        //            foreach (T childOfChild in FindVisualChildren<T>(child))
+        //            {
+        //                yield return childOfChild;
+        //            }
+        //        }
+        //    }
+        //}
 
         private void makeStackPanelVisible()
         {
@@ -2112,6 +1334,11 @@ namespace Mastermind
             if (e.Key == Key.F12 && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
             {
                 ToggleDebug();
+            }
+
+            if (e.Key == Key.Enter)
+            {
+                ControlButton_Click(null, null);
             }
         }
 
