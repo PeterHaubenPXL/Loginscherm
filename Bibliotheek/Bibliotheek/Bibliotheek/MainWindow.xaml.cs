@@ -1,4 +1,6 @@
-﻿using System.CodeDom.Compiler;
+﻿using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.Metrics;
 using System.Text;
@@ -24,12 +26,13 @@ namespace Bibliotheek
 
         string bookCode = "";
 
-        //List<string> bookList = new List<string>();
-        //List<string> bookCodeList = new List<string>();
+        List<string> borrowedList = new List<string>();
+        List<string> availableList = new List<string>();
+        List<string> totalList = new List<string>();
 
-        string[,] availableArray = new string[100, 2];   //Kolommen : boekcode,titel
-        string[,] borrowedArray = new string[100, 4];    //Kolommen : boekcode,titel,Naam,Voornaam
-        string[,] totalArray = new string[100, 2];       //Kolommen : boekcode, title
+        //string[,] availableArray = new string[100, 2];   //Kolommen : boekcode,titel
+        //string[,] borrowedArray = new string[100, 4];    //Kolommen : boekcode,titel,Naam,Voornaam
+        //string[,] totalArray = new string[100, 2];       //Kolommen : boekcode, title
 
         public MainWindow()
         {
@@ -76,17 +79,20 @@ namespace Bibliotheek
                 {
                     temp = "0" + temp;
                 }
-                availableArray[i, 0] = $"B{temp}";
-                availableArray[i, 1] = "Book " + (i + 1).ToString();
+                string newBookCode = $"B{temp}";
+                string newBookTitle = "Book " + (i + 1).ToString();
+
+                availableList.Add($"{newBookTitle}\t{newBookCode}");
+                totalList.Add($"{newBookTitle}\t{newBookCode}");
             }
 
-            //Moet verwijdert worden
-            firstNameTextBox.Text = userfirstName = "Peter";
-            nameTextBox.Text = userName = "Hauben";
+            fillAvailable();
 
-            int tempInt = borrowedArray.GetLength(0);
+            //Moet verwijdert worden
+            //firstNameTextBox.Text = userfirstName = "Peter";
+            //nameTextBox.Text = userName = "Hauben";
         }
-        
+
 
         private void addBookMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -110,59 +116,27 @@ namespace Bibliotheek
 
         private void fillAvailable()
         {
-            int counter = 0;
-
-            string loadInListbox = "";
-
             availableListBox.Items.Clear();
 
-            foreach (var item in availableArray)
+            availableList.Sort();
+
+            foreach (var item in availableList)
             {
-                if (item != null)
-                {
-                    if (counter % 2 == 0)
-                    {
-                        loadInListbox = item;
-                        counter++;
-                    }
-                    else
-                    {
-                        loadInListbox += $"\t{item}";
-                        availableListBox.Items.Add(loadInListbox);
-                        counter++;
-                    }
-                }
+                availableListBox.Items.Add(item);
             }
+            int X = 0;
+
         }
 
         private void fillBorrowed()
         {
-            int counter = 0;
-
-            string loadInListbox = "";
-
             borrowedListBox.Items.Clear();
 
-            foreach (var item in borrowedArray)
+            foreach (var item in borrowedList)
             {
                 if (item != null)
                 {
-                    if (counter % 4 == 0)
-                    {
-                        loadInListbox = item;
-                        counter++;
-                    }
-                    else if (counter % 4 == 1 || counter % 4 == 2)
-                    {
-                        loadInListbox += $"\t{item}";
-                        counter++;
-                    }
-                    else if (counter % 4 == 3)
-                    {
-                        loadInListbox += $"\t{item}";
-                        borrowedListBox.Items.Add(loadInListbox);
-                        counter++;
-                    }
+                    borrowedListBox.Items.Add(item);
                 }
             }
         }
@@ -184,42 +158,34 @@ namespace Bibliotheek
             if (bookTitleTextBox.Text.Length > 0)
             {
                 int counter = 0;
-                foreach (var item in totalArray)
+                int index = 1;
+                foreach (var item in totalList)
                 {
-                    if (item == null)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        if (counter % 2 == 1)
-                        {
-                            if (item.ToUpper() == bookTitleTextBox.Text.ToUpper())
-                            {
-                                MessageBox.Show("Dit boek bestaat al\ngeef ander boek in", "Boek bestaat reeds!", MessageBoxButton.OK);
+                    string temp = item.ToString();
+                    string[] tempArray = temp.Split('\t');
 
-                                bookTitleTextBox.Focus();
-                                bookTitleTextBox.Text = "";
-                                return;
-                            }
-                        }
-                        counter++;
+                    if (tempArray[0].ToUpper() == bookTitleTextBox.Text.ToUpper())
+                    {
+                        MessageBox.Show("Dit boek bestaat al\ngeef ander boek in", "Boek bestaat reeds!", MessageBoxButton.OK);
+
+                        bookTitleTextBox.Focus();
+                        bookTitleTextBox.Text = "";
+
+                        return;
                     }
                 }
 
-                bookCodeTextBox.Text = GenerateCode();
-
-                for (int i = 0; i < 100; i++)
+                if (index % 2 == 1)
                 {
-                    if (availableArray[i, 0] == null)
-                    {
-                        availableArray[i, 0] = "[" + bookCodeTextBox.Text + "]";
-                        availableArray[i, 1] = bookTitleTextBox.Text;
-                        totalArray[i, 0] = "[" + bookCodeTextBox.Text + "]";
-                        totalArray[i, 1] = bookTitleTextBox.Text;
-                        break;
-                    }
+                    index++;
                 }
+
+                bookCodeTextBox.Text = GenerateCode(); 
+
+                availableList.Add($"{bookTitleTextBox.Text}\t{bookCode}");
+                totalList.Add($"{bookTitleTextBox.Text}\t{bookCode}");
+
+                fillAvailable();
 
                 MessageBoxResult result = MessageBox.Show("Boek is opgeslagen,\nWil je nog een boek toevoegen?", "Opslag geslaagd", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
 
@@ -240,6 +206,7 @@ namespace Bibliotheek
             {
                 MessageBox.Show("Vul de titel van de nieuwe boek in", "Vul gegevens in", MessageBoxButton.OK);
                 bookTitleTextBox.Focus();
+                bookTitleTextBox.Text = "";
             }
         }
 
@@ -247,34 +214,18 @@ namespace Bibliotheek
         {
             bookCode = "B";
 
-            int counter = 1;
-            int bookNumber = 1;
-            foreach (var item in totalArray)
+            int bookNumber = totalList.Count() + 1;
+
+            string bookString = bookNumber.ToString();
+
+            while (bookString.Length < 3)
             {
-                if (item == null)
-                {
-                    string bookString = bookNumber.ToString();
-
-                    while (bookString.Length < 3)
-                    {
-                        bookString = "0" + bookString;
-                    }
-
-                    bookCode += bookString;
-                    return bookCode;
-                }
-                else
-                {
-                    counter++;
-                }
-
-                if (counter % 2 == 1)
-                {
-                    bookNumber++;
-                }
+                bookString = "0" + bookString;
             }
 
-            return "";
+            bookCode += bookString;
+
+            return bookCode;
         }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
@@ -287,56 +238,19 @@ namespace Bibliotheek
         {
             if (availableListBox.SelectedIndex > -1)
             {
-                string bookCode = availableListBox.SelectedItem.ToString();
-                bookCode = bookCode.Substring(0, 4);
-                string bookTitle = availableListBox.SelectedItem.ToString();
-                bookTitle = bookTitle.Substring(5);
+                string selectedItem = availableListBox.SelectedItem.ToString();
 
-                // Data opslaan naam, voornaam, SelectedBook in uitgeleend
+                borrowedList.Add(selectedItem + $"\t{userfirstName}\t{userName}");
 
-                int counter = 0;
-                bool isDeleted = false;
-                foreach (var item in availableArray)
-                {
-                    if (item == bookCode)
-                    {
-                        int counterBorrowed = 0;
+                borrowedList.Sort();
 
-                        // Set item in borrowedArray
-                        foreach (var item2 in borrowedArray)
-                        {
-                            if (counterBorrowed % 4 == 0)
-                            {
-                                if (item2 == null)
-                                {
-                                    borrowedArray[counterBorrowed / 4, 0] = bookCode;
-                                    borrowedArray[counterBorrowed / 4, 1] = bookTitle;
-                                    borrowedArray[counterBorrowed / 4, 2] = firstNameBorrowTextBox.Text;
-                                    borrowedArray[counterBorrowed / 4, 3] = nameBorrowTextBox.Text;
-                                    break;
-                                }
-                            }
-                            counterBorrowed++;
-                        }
+                fillBorrowed();
 
-                        //Delete selecteditem uit availableArray
+                availableList.Remove(selectedItem);
 
-                        availableArray[counter / 2, 0] = null;
-                        availableArray[counter / 2, 1] = null;
-                        isDeleted = true;
-                        break;
-
-                    }
-
-                    counter++;
-
-                }
+                availableList.Sort();
 
                 fillAvailable();
-
-                // Book verwijderen uit availableListBox
-
-                int X = 0;
             }
             else
             {
@@ -354,68 +268,26 @@ namespace Bibliotheek
         {
             if (borrowedListBox.SelectedIndex > -1)
             {
-                // ToDo
-                //MessageBox.Show("WIP", "ToDo!!!", MessageBoxButton.OK);
-
                 if (borrowedListBox.SelectedIndex > -1)
                 {
-                    string bookCode = borrowedListBox.SelectedItem.ToString();
-                    bookCode = bookCode.Substring(0, 4);
-                    string bookTitle = borrowedListBox.SelectedItem.ToString();
-                    bookTitle = bookTitle.Substring(5);
-                    //bookTitle = bookTitle.Substring(0, bookTitle.IndexOf("\\t"));
-                    string[] split = bookTitle.Split('\t');
-                    bookTitle = split[0];
+                    string selectedItem = borrowedListBox.SelectedItem.ToString();
 
+                    borrowedList.Remove(selectedItem);
 
-                    // Data opslaan naam, voornaam, SelectedBook in uitgeleend
+                    string[] split = selectedItem.Split('\t');
+                    string bookCode = split[0];
+                    string bookTitle = split[1];
+                    string userFirstName = split[2];
+                    string userLastName = split[3];
 
-                    int counter = 0;
-                    bool isDeleted = false;
-                    foreach (var item in borrowedArray)
-                    {
-                        if (item == bookCode)
-                        {
-                            int counterAvailable = 0;
+                    selectedItem = $"{bookCode}\t{bookTitle}";
 
-                            // Set item in available
-                            foreach (var item2 in availableArray)
-                            {
-                                if (counterAvailable % 2 == 0)
-                                {
-                                    if (item2 == null)
-                                    {
-                                        availableArray[counterAvailable / 2, 0] = bookCode;
-                                        availableArray[counterAvailable / 2, 1] = bookTitle;
-                                        break;
-                                    }
-                                }
-                                counterAvailable++;
-                            }
-
-                            //Delete selecteditem uit borrowedArray
-
-                            borrowedArray[counter / 4, 0] = null;
-                            borrowedArray[counter / 4, 1] = null;
-                            borrowedArray[counter / 4, 2] = null;
-                            borrowedArray[counter / 4, 3] = null;
-                            isDeleted = true;
-                            break;
-
-                        }
-
-                        counter++;
-
-                    }
-
-                    fillBorrowed();
-
-                    int X = 0;
+                    availableList.Add(selectedItem);
                 }
-                else
-                {
-                    MessageBox.Show("Selecteer een boek", "Geen boek geselecteerd", MessageBoxButton.OK);
-                }
+
+                fillBorrowed();
+
+                int X = 0;
             }
             else
             {
@@ -478,5 +350,52 @@ namespace Bibliotheek
                 checkUserReturnButton.IsEnabled = true;
             }
         }
+
+        private void borrowSortButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (string item in availableListBox.Items)
+            {
+                availableList.Add(item);
+            }
+
+            fillAvailable();
+        }
+
+        private void returnSortButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (string item in borrowedListBox.Items)
+            {
+                borrowedList.Add(item);
+            }
+
+            borrowedList.Sort();
+
+            fillBorrowed();
+        }
+
+        private void searchBorrowedTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string temp;
+
+            temp = searchBorrowedTextBox.Text;
+            temp = borrowedList.Find(element => element.ToUpper().StartsWith(temp.ToUpper()));
+
+            borrowedListBox.SelectedIndex = borrowedListBox.Items.IndexOf(temp);
+
+            borrowedListBox.ScrollIntoView(borrowedListBox.SelectedItem);
+        }
+
+        private void searchAvailableTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string temp;
+
+            temp = searchAvailableTextBox.Text;
+            temp = availableList.Find(element => element.ToUpper().StartsWith(temp.ToUpper()));
+
+            availableListBox.SelectedIndex = availableListBox.Items.IndexOf(temp);
+
+            availableListBox.ScrollIntoView(availableListBox.SelectedItem);
+        }
     }
+
 }
