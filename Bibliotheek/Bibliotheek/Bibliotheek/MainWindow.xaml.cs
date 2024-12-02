@@ -21,7 +21,7 @@ namespace Bibliotheek
     /// </summary>
     public partial class MainWindow : Window
     {
-        string userfirstName = "";
+        string userFirstname = "";
         string userName = "";
 
         string bookCode = "";
@@ -30,8 +30,9 @@ namespace Bibliotheek
         List<string> availableList = new List<string>();
         List<string> totalList = new List<string>();
 
-        //string[,] availableArray = new string[100, 2];   //Kolommen : boekcode,titel
-        //string[,] borrowedArray = new string[100, 4];    //Kolommen : boekcode,titel,Naam,Voornaam
+        // Vervangen door bovenstaande lijsten
+        //string[,] availableArray = new string[100, 2];   //Kolommen : Boektitel,boekcode
+        //string[,] borrowedArray = new string[100, 4];    //Kolommen : Boektitel,boekcode,Vooraam,Naam
         //string[,] totalArray = new string[100, 2];       //Kolommen : boekcode, title
 
         public MainWindow()
@@ -41,21 +42,21 @@ namespace Bibliotheek
 
         private void saveUser_Click(object sender, RoutedEventArgs e)
         {
-            if (nameTextBox.Text.Length > 0 && firstNameTextBox.Text.Length > 0)
+            if (nameTextBox.Text.Length > 0 && firstnameTextBox.Text.Length > 0)
             {
-                userfirstName = firstNameTextBox.Text;
+                userFirstname = firstnameTextBox.Text;
                 userName = nameTextBox.Text;
 
-                MessageBox.Show($"Hallo {userfirstName} {userName}\nblij je terug te zien", "Begroeting", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Hallo {userFirstname} {userName}\nblij je terug te zien", "Begroeting", MessageBoxButton.OK, MessageBoxImage.Information);
                 userStackPanel.Visibility = Visibility.Collapsed;
                 selectionStackPanel.Visibility = Visibility.Visible;
             }
             else
             {
                 MessageBox.Show("Vul de onbrekende gegevens in", "Niet volledig", MessageBoxButton.OK, MessageBoxImage.Warning);
-                if (firstNameTextBox.Text.Length == 0)
+                if (firstnameTextBox.Text.Length == 0)
                 {
-                    firstNameTextBox.Focus();
+                    firstnameTextBox.Focus();
                 }
                 else
                 {
@@ -70,7 +71,8 @@ namespace Bibliotheek
             borrowBookGroupBox.Visibility = Visibility.Collapsed;
             addBookGroupBox.Visibility = Visibility.Collapsed;
             returnBookGroupBox.Visibility = Visibility.Collapsed;
-
+            selectionStackPanel.Visibility = Visibility.Collapsed;
+#if DEBUG
             string temp;
             for (int i = 0; i < 25; i++)
             {
@@ -86,35 +88,95 @@ namespace Bibliotheek
                 totalList.Add($"{newBookTitle}\t{newBookCode}");
             }
 
-            fillAvailable();
+            FillAvailable();
 
-            //Moet verwijdert worden
-            //firstNameTextBox.Text = userfirstName = "Peter";
-            //nameTextBox.Text = userName = "Hauben";
+            firstnameTextBox.Text = userFirstname = "Peter";
+            nameTextBox.Text = userName = "Hauben";
+#endif
         }
 
 
         private void addBookMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            addBookGroupBox.Visibility = Visibility.Visible;
-            menuMenu.IsEnabled = false;
+            makeVisible(sender);
+            
+            bookTitleTextBox.Focus();
         }
 
         private void borrowBookMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            borrowBookGroupBox.Visibility = Visibility.Visible;
+            makeVisible(sender);
+
             borrowBookButton.IsEnabled = false;
-            menuMenu.IsEnabled = false;
 
-            firstNameBorrowTextBox.Text = userfirstName;
+            nameBorrowTextBox.IsEnabled = true;
+
+            borrowBookButton.IsEnabled = false;
+
+            FillAvailable();
+
             nameBorrowTextBox.Text = userName;
+            firstnameBorrowTextBox.Text = userFirstname;
 
-            fillAvailable();
+            firstnameBorrowTextBox.IsEnabled = true;
+            firstnameBorrowTextBox.SelectAll();
+            firstnameBorrowTextBox.Focus();
+        }
 
+        private void returnBookMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            makeVisible(sender);
+
+            returnBookButton.IsEnabled = false;  
+
+            firstnameReturnTextBox.Text = userFirstname;
+            nameReturnTextBox.Text = userName;
+
+            nameReturnTextBox.IsEnabled = true;
+            borrowBookButton.IsEnabled = false;
+
+            FillBorrowed();
+
+            firstnameReturnTextBox.IsEnabled = true;
+            firstnameReturnTextBox.SelectAll();
+            firstnameReturnTextBox.Focus();
+        }
+
+        private void makeVisible(object sender)
+        {
+            if(sender is MenuItem mni)
+            {
+                if (mni.Name == "addBookMenuItem")
+                {
+                    addBookGroupBox.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    addBookGroupBox.Visibility = Visibility.Collapsed;
+                }
+
+                if (mni.Name == "borrowBookMenuItem")
+                {
+                    borrowBookGroupBox.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    borrowBookGroupBox.Visibility = Visibility.Collapsed;
+                }
+
+                if (mni.Name == "returnBookMenuItem")
+                {
+                    returnBookGroupBox.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    returnBookGroupBox.Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
 
-        private void fillAvailable()
+        private void FillAvailable()
         {
             availableListBox.Items.Clear();
 
@@ -124,13 +186,13 @@ namespace Bibliotheek
             {
                 availableListBox.Items.Add(item);
             }
-            int X = 0;
-
         }
 
-        private void fillBorrowed()
+        private void FillBorrowed()
         {
             borrowedListBox.Items.Clear();
+
+            borrowedList.Sort();
 
             foreach (var item in borrowedList)
             {
@@ -141,24 +203,10 @@ namespace Bibliotheek
             }
         }
 
-        private void returnBookMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            returnBookGroupBox.Visibility = Visibility.Visible;
-            returnBookButton.IsEnabled = false;
-            menuMenu.IsEnabled = false;
-
-            firstNameReturnTextBox.Text = userfirstName;
-            nameReturnTextBox.Text = userName;
-
-            fillBorrowed();
-        }
-
         private void addBookButton_Click(object sender, RoutedEventArgs e)
         {
             if (bookTitleTextBox.Text.Length > 0)
             {
-                int counter = 0;
-                int index = 1;
                 foreach (var item in totalList)
                 {
                     string temp = item.ToString();
@@ -175,17 +223,12 @@ namespace Bibliotheek
                     }
                 }
 
-                if (index % 2 == 1)
-                {
-                    index++;
-                }
-
-                bookCodeTextBox.Text = GenerateCode(); 
+                bookCodeTextBox.Text = GenerateCode();
 
                 availableList.Add($"{bookTitleTextBox.Text}\t{bookCode}");
                 totalList.Add($"{bookTitleTextBox.Text}\t{bookCode}");
 
-                fillAvailable();
+                FillAvailable();
 
                 MessageBoxResult result = MessageBox.Show("Boek is opgeslagen,\nWil je nog een boek toevoegen?", "Opslag geslaagd", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
 
@@ -212,27 +255,23 @@ namespace Bibliotheek
 
         private string GenerateCode()
         {
-            bookCode = "B";
-
-            int bookNumber = totalList.Count() + 1;
-
-            string bookString = bookNumber.ToString();
+            string bookString = (totalList.Count() + 1).ToString();
 
             while (bookString.Length < 3)
             {
                 bookString = "0" + bookString;
             }
 
-            bookCode += bookString;
+            bookCode += "B" + bookString;
 
             return bookCode;
         }
 
-        private void cancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            menuMenu.IsEnabled = true;
-            addBookGroupBox.Visibility = Visibility.Collapsed;
-        }
+        //private void cancelButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    menuMenu.IsEnabled = true;
+        //    addBookGroupBox.Visibility = Visibility.Collapsed;
+        //}
 
         private void borrowBookButton_Click(object sender, RoutedEventArgs e)
         {
@@ -240,17 +279,13 @@ namespace Bibliotheek
             {
                 string selectedItem = availableListBox.SelectedItem.ToString();
 
-                borrowedList.Add(selectedItem + $"\t{userfirstName}\t{userName}");
+                borrowedList.Add(selectedItem + $"\t{userFirstname}\t{userName}");
 
-                borrowedList.Sort();
-
-                fillBorrowed();
+                FillBorrowed();
 
                 availableList.Remove(selectedItem);
 
-                availableList.Sort();
-
-                fillAvailable();
+                FillAvailable();
             }
             else
             {
@@ -258,36 +293,31 @@ namespace Bibliotheek
             }
         }
 
-        private void borrowCancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            borrowBookGroupBox.Visibility = Visibility.Collapsed;
-            menuMenu.IsEnabled = true;
-        }
+        //private void borrowCancelButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    borrowBookGroupBox.Visibility = Visibility.Collapsed;
+        //    menuMenu.IsEnabled = true;
+        //}
 
         private void returnBookButton_Click(object sender, RoutedEventArgs e)
         {
             if (borrowedListBox.SelectedIndex > -1)
             {
-                if (borrowedListBox.SelectedIndex > -1)
-                {
-                    string selectedItem = borrowedListBox.SelectedItem.ToString();
+                string selectedItem = borrowedListBox.SelectedItem.ToString();
 
-                    borrowedList.Remove(selectedItem);
+                borrowedList.Remove(selectedItem);
 
-                    string[] split = selectedItem.Split('\t');
-                    string bookCode = split[0];
-                    string bookTitle = split[1];
-                    string userFirstName = split[2];
-                    string userLastName = split[3];
+                string[] split = selectedItem.Split('\t');
+                string bookTitle = split[0];
+                string bookCode = split[1];
+                string userFirstName = split[2];
+                string userLastName = split[3];
 
-                    selectedItem = $"{bookCode}\t{bookTitle}";
+                selectedItem = $"{bookTitle}\t{bookCode}";
 
-                    availableList.Add(selectedItem);
-                }
+                availableList.Add(selectedItem);
 
-                fillBorrowed();
-
-                int X = 0;
+                FillBorrowed();
             }
             else
             {
@@ -295,21 +325,21 @@ namespace Bibliotheek
             }
         }
 
-        private void returnCancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            returnBookGroupBox.Visibility = Visibility.Collapsed;
-            menuMenu.IsEnabled = true;
-        }
+        //private void returnCancelButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    returnBookGroupBox.Visibility = Visibility.Collapsed;
+        //    menuMenu.IsEnabled = true;
+        //}
 
         private void checkUserBorrowButton_Click(object sender, RoutedEventArgs e)
         {
-            if (firstNameBorrowTextBox.Text.Length == 0 || nameBorrowTextBox.Text.Length == 0)
+            if (firstnameBorrowTextBox.Text.Length == 0 || nameBorrowTextBox.Text.Length == 0)
             {
                 MessageBox.Show("Geef eerst je gegevens in", "Gegevens invullen", MessageBoxButton.OK);
 
-                if (firstNameBorrowTextBox.Text.Length == 0)
+                if (firstnameBorrowTextBox.Text.Length == 0)
                 {
-                    firstNameBorrowTextBox.Focus();
+                    firstnameBorrowTextBox.Focus();
                 }
                 else
                 {
@@ -318,8 +348,11 @@ namespace Bibliotheek
             }
             else
             {
-                firstNameBorrowTextBox.IsEnabled = false;
+                firstnameBorrowTextBox.IsEnabled = false;
                 nameBorrowTextBox.IsEnabled = false;
+
+                userFirstname = firstnameBorrowTextBox.Text;
+                userName = nameBorrowTextBox.Text;
 
                 borrowBookButton.IsEnabled = true;
                 checkUserBorrowButton.IsEnabled = true;
@@ -328,13 +361,13 @@ namespace Bibliotheek
 
         private void checkUserReturnButton_Click(object sender, RoutedEventArgs e)
         {
-            if (firstNameReturnTextBox.Text.Length == 0 || nameReturnTextBox.Text.Length == 0)
+            if (firstnameReturnTextBox.Text.Length == 0 || nameReturnTextBox.Text.Length == 0)
             {
                 MessageBox.Show("Geef eerst je gegevens in", "Gegevens invullen", MessageBoxButton.OK);
 
-                if (firstNameReturnTextBox.Text.Length == 0)
+                if (firstnameReturnTextBox.Text.Length == 0)
                 {
-                    firstNameReturnTextBox.Focus();
+                    firstnameReturnTextBox.Focus();
                 }
                 else
                 {
@@ -343,39 +376,21 @@ namespace Bibliotheek
             }
             else
             {
-                firstNameReturnTextBox.IsEnabled = false;
+                firstnameReturnTextBox.IsEnabled = false;
                 nameReturnTextBox.IsEnabled = false;
+
+                userFirstname = firstnameReturnTextBox.Text;
+                userName = nameReturnTextBox.Text;
 
                 returnBookButton.IsEnabled = true;
                 checkUserReturnButton.IsEnabled = true;
             }
         }
 
-        private void borrowSortButton_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (string item in availableListBox.Items)
-            {
-                availableList.Add(item);
-            }
-
-            fillAvailable();
-        }
-
-        private void returnSortButton_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (string item in borrowedListBox.Items)
-            {
-                borrowedList.Add(item);
-            }
-
-            borrowedList.Sort();
-
-            fillBorrowed();
-        }
 
         private void searchBorrowedTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string temp;
+            string? temp;
 
             temp = searchBorrowedTextBox.Text;
             temp = borrowedList.Find(element => element.ToUpper().StartsWith(temp.ToUpper()));
@@ -387,7 +402,7 @@ namespace Bibliotheek
 
         private void searchAvailableTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string temp;
+            string? temp;
 
             temp = searchAvailableTextBox.Text;
             temp = availableList.Find(element => element.ToUpper().StartsWith(temp.ToUpper()));
@@ -396,6 +411,15 @@ namespace Bibliotheek
 
             availableListBox.ScrollIntoView(availableListBox.SelectedItem);
         }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox txt)
+            {
+                txt.SelectAll();
+            }
+        }
+
     }
 
 }

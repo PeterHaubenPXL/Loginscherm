@@ -16,116 +16,120 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Name="userStackPanel" Visibility="Collapsed" Grid.Column="1" Grid.Row="1">
-            <Label Content="Geef je gegevens in" FontSize="28"></Label>
+            <Label Content="Geef je gegevens in" FontSize="24"></Label>
             <Label Content="Voornaam"></Label>
-            <TextBox Name="firstNameTextBox"></TextBox>
+            <TextBox GotFocus="TextBox_GotFocus" Name="firstnameTextBox"></TextBox>
             <Label Content="Naam"></Label>
-            <TextBox Name="nameTextBox" MinWidth="250"></TextBox>
+            <TextBox GotFocus="TextBox_GotFocus" Name="nameTextBox" MinWidth="250"></TextBox>
             <Button Click="saveUser_Click" Name="saveUser" Content="Sla gegevens op" Margin="8 15 8 8" Padding="8"></Button>
         </StackPanel>
-        <StackPanel Name="selectionStackPanel" Visibility="Collapsed" Grid.Row="1" Grid.Column="1">
-            <Label Content="Wat wil je uitvoeren?" FontSize="28"></Label>
-            <Menu Name="menuMenu">
-                <MenuItem Click="addBookMenuItem_Click"  Margin="5" Padding="3"  Name="addBookMenuItem" Header="Boek toevoegen"></MenuItem>
-                <MenuItem Click="borrowBookMenuItem_Click" Margin="5" Padding="3" Name="borrowBookMenuItem" Header="Lenen"></MenuItem>
-                <MenuItem Click="returnBookMenuItem_Click"  Margin="5" Padding="3"  Name="returnBookMenuItem" Header="Terugbrengen"></MenuItem>
+        <StackPanel Name="selectionStackPanel" Visibility="Visible" Grid.Row="1" Grid.Column="1" Width="750" Height="640">
+            <Label Content="Wat wil je uitvoeren?" FontSize="28"/>
+            <Menu x:Name="menuMenu">
+                <MenuItem Click="addBookMenuItem_Click" Margin="5" Padding="3"  x:Name="addBookMenuItem" Header="Boek toevoegen"/>
+                <MenuItem Click="borrowBookMenuItem_Click" Margin="5" Padding="3" x:Name="borrowBookMenuItem" Header="Uitlenen"/>
+                <MenuItem Click="returnBookMenuItem_Click" Margin="5" Padding="3"  x:Name="returnBookMenuItem" Header="Terugbrengen"/>
             </Menu>
-            <Grid Name="mainGrid" Margin="20">
+
+            <Grid x:Name="mainGrid" Margin="20" Grid.Row="1" Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <GroupBox Name="addBookGroupBox" Visibility="Collapsed" Grid.Row="1" Grid.Column="1" MinWidth="250">
-                    <StackPanel Name="addBookStackPanel">
-                        <Label Content="Boek titel"></Label>
-                        <TextBox Name="bookTitleTextBox"></TextBox>
-                        <Label Content="Boekcode"></Label>
-                        <TextBox Name="bookCodeTextBox" IsEnabled="False"></TextBox>
-                        <Button Click="addBookButton_Click" Padding="8" Margin="10" Name="addBookButton" Content="Boek toevoegen"></Button>
-                        <Button Click="cancelButton_Click" Padding="8" Margin="10" Name="cancelButton" Content="Terug naar Menu"></Button>
-                    </StackPanel>
-                </GroupBox>
-                <GroupBox Name="borrowBookGroupBox" Visibility="Visible" Grid.Row="1" Grid.Column="1">
+                <GroupBox x:Name="addBookGroupBox" Visibility="Collapsed" Grid.Row="1" Grid.Column="1" MinWidth="250" Padding="10">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <Label Grid.Row="0" Grid.Column="0" Content="Beschikbare boeken" Margin="10 10 10 3"/>
-                            <TextBox TextChanged="searchAvailableTextBox_TextChanged" Name ="searchAvailableTextBox" Margin="10"></TextBox>
-                        </StackPanel>
-                        <ListBox Name="availableListBox" Margin="10" Height="350" MinWidth="250" Grid.Row="1" Grid.Column="0" Grid.RowSpan="4"></ListBox>
-                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
-                            <Label Content="Geef je gegevens in" FontSize="28"></Label>
-                            <Label Content="Voornaam"></Label>
-                            <TextBox Name="firstNameBorrowTextBox"></TextBox>
-                            <Label Content="Naam"></Label>
-                            <TextBox Name="nameBorrowTextBox" MinWidth="250"></TextBox>
-                            <Button Click="checkUserBorrowButton_Click"  Content="Controleer gegevens" Name="checkUserBorrowButton" Padding="8" Margin="10"></Button>
-                            <Button Click="borrowBookButton_Click"  Content="Uitlenen" Name="borrowBookButton" Padding="8" Margin="10"></Button>
-                            <!--<Button Click="borrowSortButton_Click"  Content="Sorteren" Name="borrowSortButton" Padding="8" Margin="10"></Button>-->
-                            <Button Click="borrowCancelButton_Click"  Content="Terug naar Menu" Name="borrowCancelButton" Padding="8" Margin="10 40 10 10"></Button>
+                        <StackPanel x:Name="addBookStackPanel" Grid.Row="1" Grid.Column="1">
+                            <Label Content="Boek titel" MinWidth="250"/>
+                            <TextBox GotFocus="TextBox_GotFocus" x:Name="bookTitleTextBox"/>
+                            <Label Content="Boekcode"/>
+                            <TextBox GotFocus="TextBox_GotFocus" x:Name="bookCodeTextBox" IsEnabled="False"/>
+                            <Button Click="addBookButton_Click" Padding="8" Margin="10 20 10 10" x:Name="addBookButton" Content="Boek toevoegen"/>
+                            <!--<Button Click="cancelButton_Click" Padding="8" Margin="10" Name="cancelButton" Content="Terug naar Menu"></Button>-->
                         </StackPanel>
                     </Grid>
                 </GroupBox>
-                <GroupBox Name="returnBookGroupBox" Visibility="Collapsed" Grid.Row="1" Grid.Column="1">
+                <GroupBox x:Name="borrowBookGroupBox" Visibility="Collapsed" Grid.Row="1" Grid.Column="1" Padding="10">
                     <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <Label Content="Zoeken" Margin="10 10 10 0"></Label>
+                            <TextBox TextChanged="searchAvailableTextBox_TextChanged" x:Name ="searchAvailableTextBox"  Margin="10 0"/>
+                            <Label Grid.Row="0" Grid.Column="0" Content="Beschikbare boeken" Margin="10 10 10 3"/>
+                        </StackPanel>
+                        <ListBox x:Name="availableListBox" Margin="10 3 10 10" Height="380" MinWidth="250" Grid.Row="1" Grid.Column="0" Grid.RowSpan="4"/>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
+                            <Label Content="Geef je gegevens in" FontSize="28"/>
+                            <Label  Content="Voornaam"/>
+                            <TextBox GotFocus="TextBox_GotFocus" x:Name="firstnameBorrowTextBox"/>
+                            <Label Content="Naam"/>
+                            <TextBox GotFocus="TextBox_GotFocus" x:Name="nameBorrowTextBox" MinWidth="250"/>
+                            <Button Click="checkUserBorrowButton_Click"  Content="Controleer gegevens" x:Name="checkUserBorrowButton" Padding="8" Margin="10 20 10 10"/>
+                            <Button Click="borrowBookButton_Click"  Content="Uitlenen" x:Name="borrowBookButton" Padding="8" Margin="10"/>
+                            <!--<Button Click="borrowSortButton_Click"  Content="Sorteren" Name="borrowSortButton" Padding="8" Margin="10"></Button>-->
+                            <!--<Button Click="borrowCancelButton_Click"  Content="Terug naar Menu" Name="borrowCancelButton" Padding="8" Margin="10 40 10 10"></Button>-->
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+                <GroupBox x:Name="returnBookGroupBox" Visibility="Visible" Grid.Row="1" Grid.Column="1"  Padding="10">
+                    <Grid Grid.Row="1" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel>
-                            <Label Grid.Row="0" Grid.Column="0" Content="Uitgeleende boeken" Margin="10 10 10 3"/>
-                            <TextBox TextChanged="searchBorrowedTextBox_TextChanged" Name="searchBorrowedTextBox"></TextBox>
+                            <Label Content="Zoeken" Margin="10 10 10 0"></Label>
+                            <TextBox GotFocus="TextBox_GotFocus" TextChanged="searchBorrowedTextBox_TextChanged" x:Name="searchBorrowedTextBox" Margin="10 0"/>
+                            <Label Content="Uitgeleende boeken" Margin="10 10 10 3"/>
                         </StackPanel>
-                        <ListBox Name="borrowedListBox" Margin="10" MinHeight="350" MinWidth="250" Grid.Row="1" Grid.Column="0" Grid.RowSpan="4"></ListBox>
+                        <ListBox x:Name="borrowedListBox" Margin="10 3 10 10" MinHeight="380" MinWidth="250" Grid.Row="1" Grid.Column="0" Grid.RowSpan="4"/>
                         <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
-                            <Label Content="Geef je gegevens in" FontSize="28"></Label>
-                            <Label Content="Voornaam"></Label>
-                            <TextBox Name="firstNameReturnTextBox"></TextBox>
-                            <Label Content="Naam"></Label>
-                            <TextBox Name="nameReturnTextBox" MinWidth="250"></TextBox>
-                            <Button Click="checkUserReturnButton_Click"  Content="Controleer gegevens" Name="checkUserReturnButton" Padding="8" Margin="10"></Button>
-                            <Button Click="returnBookButton_Click"  Content="Inleveren" Name="returnBookButton" Padding="8" Margin="10"></Button>
+                            <Label Content="Geef je gegevens in" FontSize="24"/>
+                            <Label Content="Voornaam"/>
+                            <TextBox GotFocus="TextBox_GotFocus" x:Name="firstnameReturnTextBox"/>
+                            <Label Content="Naam"/>
+                            <TextBox GotFocus="TextBox_GotFocus" x:Name="nameReturnTextBox" MinWidth="250"/>
+                            <Button Click="checkUserReturnButton_Click"  Content="Controleer gegevens" x:Name="checkUserReturnButton" Padding="8" Margin="10 20 10 10"/>
+                            <Button Click="returnBookButton_Click"  Content="Inleveren" x:Name="returnBookButton" Padding="8" Margin="10"/>
                             <!--<Button Click="returnSortButton_Click"  Content="Sorteren" Name="returnSortButton" Padding="8" Margin="10"></Button>-->
-                            <Button Click="returnCancelButton_Click"  Content="Terug naar Menu" Name="returnCancelButton" Padding="8" Margin="10 40 10 10"></Button>
+                            <!--<Button Click="returnCancelButton_Click"  Content="Terug naar Menu" Name="returnCancelButton" Padding="8" Margin="10 40 10 10"></Button>-->
                         </StackPanel>
                     </Grid>
                 </GroupBox>
             </Grid>
-
         </StackPanel>
     </Grid>
 </Window>
