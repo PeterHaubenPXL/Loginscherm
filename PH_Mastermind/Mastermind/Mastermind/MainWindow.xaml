@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mastermind"
         mc:Ignorable="d"
-        Title="Mastermind" Height="1040" Width="550"
+        Title="Mastermind" Height="1060" Width="550"
         Loaded="Window_Loaded"
+        Closing="mastermindWindow_Closing"
         Background="Black"
         KeyDown="mastermindWindow_KeyDown"
         Name="mastermindWindow"
@@ -23,7 +24,7 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="70"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -32,6 +33,16 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
+		<Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="8" Padding="3">
+			<MenuItem Header="Bestand">
+				<MenuItem Click="newGameMenuItem_Click" Name="newGameMenuItem" Header="Nieuw spel" ></MenuItem>
+				<MenuItem Click="highScoresMenuItem_Click" Header="Highscores" Name="highScoresMenuItem"></MenuItem>
+				<MenuItem Click="closeGameMenuItem_Click"  Header="Afsluiten" Name="closeGameMenuItem"></MenuItem>
+			</MenuItem>
+			<MenuItem Header="Instellingen" Name="settingsMenuItem">
+				<MenuItem Click="chosenattemptsMenuItem_Click" Name="chosenattemptsMenuItem" Header="Aantal pogingen"></MenuItem>
+			</MenuItem>
+		</Menu>
         <StackPanel Name="colorsStackPanel" Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6">
             
         </StackPanel>
@@ -44,16 +55,26 @@
         <Label Name="scoreLabel" Margin="10" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5" FontSize="20" HorizontalContentAlignment="Center" Content="" Background="White"></Label>
         
         <StackPanel Name="seriesStackPanel" Orientation="Vertical" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="6">
-            <StackPanel Name="serie10StackPanel" Orientation="Horizontal"></StackPanel>
-            <StackPanel Name="serie9StackPanel" Orientation="Horizontal"></StackPanel>
-            <StackPanel Name="serie8StackPanel" Orientation="Horizontal"></StackPanel>
-            <StackPanel Name="serie7StackPanel" Orientation="Horizontal"></StackPanel>
-            <StackPanel Name="serie6StackPanel" Orientation="Horizontal"></StackPanel>
-            <StackPanel Name="serie5StackPanel" Orientation="Horizontal"></StackPanel>
-            <StackPanel Name="serie4StackPanel" Orientation="Horizontal"></StackPanel>
-            <StackPanel Name="serie3StackPanel" Orientation="Horizontal"></StackPanel>
-            <StackPanel Name="serie2StackPanel" Orientation="Horizontal"></StackPanel>
             <StackPanel Name="serie1StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie2StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie3StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie4StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie5StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie6StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie7StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie8StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie9StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie10StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie11StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie12StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie13StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie14StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie15StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie16StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie17StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie18StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie19StackPanel" Orientation="Horizontal"></StackPanel>
+            <StackPanel Name="serie20StackPanel" Orientation="Horizontal"></StackPanel>
         </StackPanel>
         
         <StackPanel Name="debugStackPanel" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="6" Orientation="Horizontal" HorizontalAlignment="Center">

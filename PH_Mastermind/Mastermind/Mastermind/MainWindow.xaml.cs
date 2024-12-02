@@ -12,6 +12,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Xml.Linq;
+using Microsoft.VisualBasic;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Mastermind
 {
@@ -25,6 +28,7 @@ namespace Mastermind
         Brush chosenColor;
 
         int attempts = 0;
+        int chosenAttempts = 10;
 
         int colorCode1 = 0;
         int colorCode2 = 0;
@@ -47,6 +51,10 @@ namespace Mastermind
         List<StackPanel> list = new List<StackPanel>();
 
         string codeString = "";
+
+        string[] highScores = new string[15]; //[naam speler] - [x pogingen] - [score/100]
+
+        string player = "";
 
 
         public MainWindow()
@@ -80,10 +88,10 @@ namespace Mastermind
 
         private void generateLabels()
         {
-            int Aantal = 5;
+            int amount = 5;
 
             //Textboxen genereren
-            for (int i = 1; i <= 12; i++)
+            for (int i = 1; i <= 22; i++)
             {
                 if (i == 1)
                 {
@@ -130,7 +138,7 @@ namespace Mastermind
                 }
                 else if (i >= 3)
                 {
-                    for (int j = 1; j <= Aantal; j++)
+                    for (int j = 1; j <= amount; j++)
                     {
                         Label lbl = new Label();
                         lbl.Name = $"serie{i - 2}{j - 1}";
@@ -197,6 +205,36 @@ namespace Mastermind
                             case 12:
                                 serie10StackPanel.Children.Add(lbl);
                                 break;
+                            case 13:
+                                serie11StackPanel.Children.Add(lbl);
+                                break;
+                            case 14:
+                                serie12StackPanel.Children.Add(lbl);
+                                break;
+                            case 15:
+                                serie13StackPanel.Children.Add(lbl);
+                                break;
+                            case 16:
+                                serie14StackPanel.Children.Add(lbl);
+                                break;
+                            case 17:
+                                serie15StackPanel.Children.Add(lbl);
+                                break;
+                            case 18:
+                                serie16StackPanel.Children.Add(lbl);
+                                break;
+                            case 19:
+                                serie17StackPanel.Children.Add(lbl);
+                                break;
+                            case 20:
+                                serie18StackPanel.Children.Add(lbl);
+                                break;
+                            case 21:
+                                serie19StackPanel.Children.Add(lbl);
+                                break;
+                            case 22:
+                                serie20StackPanel.Children.Add(lbl);
+                                break;
                         }
                     }
                 }
@@ -209,7 +247,7 @@ namespace Mastermind
             attempts++;
 
             points -= 8;
-            scoreLabel.Content = $"Poging {attempts}/10 Score = {points}";
+            scoreLabel.Content = $"Poging {attempts}/{chosenAttempts} Score = {points}";
 
             if (attempts < 10)
             {
@@ -254,44 +292,56 @@ namespace Mastermind
 
             for (int i = list.Count - 1; i >= 1; i--)
             {
-                if (list[i].Visibility == Visibility.Visible)
+                counter = 0;
+                foreach (var item in list[i - 1].Children)
                 {
-                    counter = 0;
-                    foreach (var item in list[i - 1].Children)
+                    if (item is Label lbl)
                     {
-                        if (item is Label lbl)
+                        if (counter > 0)
                         {
-                            if (counter > 0)
-                            {
-                                lbl.Background = Brushes.DarkGray;
-                                lbl.BorderBrush = Brushes.Transparent;
-                            }
+                            lbl.Background = Brushes.DarkGray;
+                            lbl.BorderBrush = Brushes.Transparent;
                         }
-                        counter++;
                     }
-                    return;
+                    counter++;
                 }
+                return;
+
+                //if (list[i].Visibility == Visibility.Visible)
+                //{
+                //    counter = 0;
+                //    foreach (var item in list[i - 1].Children)
+                //    {
+                //        if (item is Label lbl)
+                //        {
+                //            if (counter > 0)
+                //            {
+                //                lbl.Background = Brushes.DarkGray;
+                //                lbl.BorderBrush = Brushes.Transparent;
+                //            }
+                //        }
+                //        counter++;
+                //    }
+                //    return;
+                //}
             }
         }
 
+        /// <summary>
+        /// The timer = stoped
+        /// </summary>
         private void StopCountdown()
         {
-            /// <summary>
-            /// The timer = stoped and
-            /// attemps + 1
-            /// </summary>
-
             timer.Stop();
         }
 
+        /// <summary>
+        /// The timer = started
+        /// from in generateButton_Click or
+        /// from in controlButton_Click
+        /// </summary>
         private void StartCountdown()
         {
-            /// <summary>
-            /// The timer = started
-            /// from in generateButton_Click or
-            /// from in controlButton_Click
-            /// </summary>
-
             timer.Start();
         }
 
@@ -660,227 +710,231 @@ namespace Mastermind
         {
             controlButton.IsDefault = true;
 
-            if (!dissolved && gameStarted)
+            if (!gameStarted)
             {
-                MessageBoxResult result = MessageBox.Show("Wilt u het spel vroegtijdig beëindigen?", $"Poging {attempts + 1}/10", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+                player = StartGame();
 
-                if (result == MessageBoxResult.Yes)
+                gameStarted = true;
+                dissolved = false;
+
+                settingsMenuItem.IsEnabled = false;   
+
+                chosenColor = Brushes.Red;
+                chosenColor_Changed();
+
+                // Code genereren
+
+                attempts = 0;
+                points = 100;
+                penaltyPoints = 0;
+                scoreLabel.Content = "";
+
+                StartCountdown();
+
+                debugStackPanel.Visibility = Visibility.Hidden;
+
+                Random rnd = new Random();
+
+                colorCode1 = rnd.Next(0, 24);
+                colorCode2 = rnd.Next(0, 24);
+                colorCode3 = rnd.Next(0, 24);
+                colorCode4 = rnd.Next(0, 24);
+
+                chosenColorCode1 = 0;
+                chosenColorCode2 = 0;
+                chosenColorCode3 = 0;
+                chosenColorCode4 = 0;
+
+                //chosenColor = Brushes.Transparent;
+
+                switch (colorCode1 % 6)
                 {
-                    this.Close();
+                    case 0:
+                        debugLabel1.Background = Brushes.Red;
+                        colorCode1 = 1;
+                        codeString = "Red, ";
+                        break;
+                    case 1:
+                        debugLabel1.Background = Brushes.Yellow;
+                        colorCode1 = 2;
+                        codeString = "Yellow, ";
+                        break;
+                    case 2:
+                        debugLabel1.Background = Brushes.Orange;
+                        colorCode1 = 3;
+                        codeString = "Orange, ";
+                        break;
+                    case 3:
+                        debugLabel1.Background = Brushes.White;
+                        colorCode1 = 4;
+                        codeString = "White, ";
+                        break;
+                    case 4:
+                        debugLabel1.Background = Brushes.Green;
+                        colorCode1 = 5;
+                        codeString = "Green, ";
+                        break;
+                    case 5:
+                        debugLabel1.Background = Brushes.Blue;
+                        colorCode1 = 6;
+                        codeString = "Blue, ";
+                        break;
                 }
-                else
+
+                switch (colorCode2 % 6)
                 {
-                    return;
+                    case 0:
+                        debugLabel2.Background = Brushes.Red;
+                        colorCode2 = 1;
+                        codeString += "Red, ";
+                        break;
+                    case 1:
+                        debugLabel2.Background = Brushes.Yellow;
+                        colorCode2 = 2;
+                        codeString += "Yellow, ";
+                        break;
+                    case 2:
+                        debugLabel2.Background = Brushes.Orange;
+                        colorCode2 = 3;
+                        codeString += "Orange, ";
+                        break;
+                    case 3:
+                        debugLabel2.Background = Brushes.White;
+                        colorCode2 = 4;
+                        codeString += "White, ";
+                        break;
+                    case 4:
+                        debugLabel2.Background = Brushes.Green;
+                        colorCode2 = 5;
+                        codeString += "Green, ";
+                        break;
+                    case 5:
+                        debugLabel2.Background = Brushes.Blue;
+                        colorCode2 = 6;
+                        codeString += "Blue, ";
+                        break;
                 }
-            }
 
-            gameStarted = true;
-            dissolved = false;
-
-            chosenColor = Brushes.Red;
-            chosenColor_Changed();
-
-            // Code genereren
-
-            attempts = 0;
-            points = 100;
-            penaltyPoints = 0;
-            scoreLabel.Content = "";
-
-            StartCountdown();
-
-            debugStackPanel.Visibility = Visibility.Hidden;
-
-            Random rnd = new Random();
-
-            colorCode1 = rnd.Next(0, 24);
-            colorCode2 = rnd.Next(0, 24);
-            colorCode3 = rnd.Next(0, 24);
-            colorCode4 = rnd.Next(0, 24);
-
-            chosenColorCode1 = 0;
-            chosenColorCode2 = 0;
-            chosenColorCode3 = 0;
-            chosenColorCode4 = 0;
-
-            //chosenColor = Brushes.Transparent;
-
-            switch (colorCode1 % 6)
-            {
-                case 0:
-                    debugLabel1.Background = Brushes.Red;
-                    colorCode1 = 1;
-                    codeString = "Red, ";
-                    break;
-                case 1:
-                    debugLabel1.Background = Brushes.Yellow;
-                    colorCode1 = 2;
-                    codeString = "Yellow, ";
-                    break;
-                case 2:
-                    debugLabel1.Background = Brushes.Orange;
-                    colorCode1 = 3;
-                    codeString = "Orange, ";
-                    break;
-                case 3:
-                    debugLabel1.Background = Brushes.White;
-                    colorCode1 = 4;
-                    codeString = "White, ";
-                    break;
-                case 4:
-                    debugLabel1.Background = Brushes.Green;
-                    colorCode1 = 5;
-                    codeString = "Green, ";
-                    break;
-                case 5:
-                    debugLabel1.Background = Brushes.Blue;
-                    colorCode1 = 6;
-                    codeString = "Blue, ";
-                    break;
-            }
-
-            switch (colorCode2 % 6)
-            {
-                case 0:
-                    debugLabel2.Background = Brushes.Red;
-                    colorCode2 = 1;
-                    codeString += "Red, ";
-                    break;
-                case 1:
-                    debugLabel2.Background = Brushes.Yellow;
-                    colorCode2 = 2;
-                    codeString += "Yellow, ";
-                    break;
-                case 2:
-                    debugLabel2.Background = Brushes.Orange;
-                    colorCode2 = 3;
-                    codeString += "Orange, ";
-                    break;
-                case 3:
-                    debugLabel2.Background = Brushes.White;
-                    colorCode2 = 4;
-                    codeString += "White, ";
-                    break;
-                case 4:
-                    debugLabel2.Background = Brushes.Green;
-                    colorCode2 = 5;
-                    codeString += "Green, ";
-                    break;
-                case 5:
-                    debugLabel2.Background = Brushes.Blue;
-                    colorCode2 = 6;
-                    codeString += "Blue, ";
-                    break;
-            }
-
-            switch (colorCode3 % 6)
-            {
-                case 0:
-                    debugLabel3.Background = Brushes.Red;
-                    colorCode3 = 1;
-                    codeString += "Red, ";
-                    break;
-                case 1:
-                    debugLabel3.Background = Brushes.Yellow;
-                    colorCode3 = 2;
-                    codeString += "Yellow, ";
-                    break;
-                case 2:
-                    debugLabel3.Background = Brushes.Orange;
-                    colorCode3 = 3;
-                    codeString += "Orange, ";
-                    break;
-                case 3:
-                    debugLabel3.Background = Brushes.White;
-                    colorCode3 = 4;
-                    codeString += "White, ";
-                    break;
-                case 4:
-                    debugLabel3.Background = Brushes.Green;
-                    colorCode3 = 5;
-                    codeString += "Green, ";
-                    break;
-                case 5:
-                    debugLabel3.Background = Brushes.Blue;
-                    colorCode3 = 6;
-                    codeString += "Blue, ";
-                    break;
-            }
-
-            switch (colorCode4 % 6)
-            {
-                case 0:
-                    debugLabel4.Background = Brushes.Red;
-                    colorCode4 = 1;
-                    codeString += "Red";
-                    break;
-                case 1:
-                    debugLabel4.Background = Brushes.Yellow;
-                    colorCode4 = 2;
-                    codeString += "Yellow";
-                    break;
-                case 2:
-                    debugLabel4.Background = Brushes.Orange;
-                    colorCode4 = 3;
-                    codeString += "Orange";
-                    break;
-                case 3:
-                    debugLabel4.Background = Brushes.White;
-                    colorCode4 = 4;
-                    codeString += "White";
-                    break;
-                case 4:
-                    debugLabel4.Background = Brushes.Green;
-                    colorCode4 = 5;
-                    codeString += "Green";
-                    break;
-                case 5:
-                    debugLabel4.Background = Brushes.Blue;
-                    colorCode4 = 6;
-                    codeString += "Blue";
-                    break;
-            }
-
-            int counter;
-
-            foreach (var item in seriesStackPanel.Children)
-            {
-                if (item is StackPanel stack)
+                switch (colorCode3 % 6)
                 {
-                    counter = 0;
+                    case 0:
+                        debugLabel3.Background = Brushes.Red;
+                        colorCode3 = 1;
+                        codeString += "Red, ";
+                        break;
+                    case 1:
+                        debugLabel3.Background = Brushes.Yellow;
+                        colorCode3 = 2;
+                        codeString += "Yellow, ";
+                        break;
+                    case 2:
+                        debugLabel3.Background = Brushes.Orange;
+                        colorCode3 = 3;
+                        codeString += "Orange, ";
+                        break;
+                    case 3:
+                        debugLabel3.Background = Brushes.White;
+                        colorCode3 = 4;
+                        codeString += "White, ";
+                        break;
+                    case 4:
+                        debugLabel3.Background = Brushes.Green;
+                        colorCode3 = 5;
+                        codeString += "Green, ";
+                        break;
+                    case 5:
+                        debugLabel3.Background = Brushes.Blue;
+                        colorCode3 = 6;
+                        codeString += "Blue, ";
+                        break;
+                }
 
-                    if (stack.Visibility == Visibility.Visible)
+                switch (colorCode4 % 6)
+                {
+                    case 0:
+                        debugLabel4.Background = Brushes.Red;
+                        colorCode4 = 1;
+                        codeString += "Red";
+                        break;
+                    case 1:
+                        debugLabel4.Background = Brushes.Yellow;
+                        colorCode4 = 2;
+                        codeString += "Yellow";
+                        break;
+                    case 2:
+                        debugLabel4.Background = Brushes.Orange;
+                        colorCode4 = 3;
+                        codeString += "Orange";
+                        break;
+                    case 3:
+                        debugLabel4.Background = Brushes.White;
+                        colorCode4 = 4;
+                        codeString += "White";
+                        break;
+                    case 4:
+                        debugLabel4.Background = Brushes.Green;
+                        colorCode4 = 5;
+                        codeString += "Green";
+                        break;
+                    case 5:
+                        debugLabel4.Background = Brushes.Blue;
+                        colorCode4 = 6;
+                        codeString += "Blue";
+                        break;
+                }
+
+                int counter;
+
+                foreach (var item in seriesStackPanel.Children)
+                {
+                    if (item is StackPanel stack)
                     {
-                        foreach (var item2 in stack.Children)
+                        counter = 0;
+
+                        if (stack.Visibility == Visibility.Visible)
                         {
-                            if (counter > 0)
+                            foreach (var item2 in stack.Children)
                             {
-                                if (item2 is Label lbl)
+                                if (counter > 0)
                                 {
-                                    lbl.Background = Brushes.DarkGray;
-                                    lbl.BorderBrush = Brushes.Transparent;
+                                    if (item2 is Label lbl)
+                                    {
+                                        lbl.Background = Brushes.DarkGray;
+                                        lbl.BorderBrush = Brushes.Transparent;
+                                    }
                                 }
+                                counter++;
                             }
-                            counter++;
                         }
                     }
                 }
+
+                controlButton.IsEnabled = true;
+
+                // StackPanels Visible maken
+
+                serie1StackPanel.Visibility = Visibility.Visible;
+                serie2StackPanel.Visibility = Visibility.Hidden;
+                serie3StackPanel.Visibility = Visibility.Hidden;
+                serie4StackPanel.Visibility = Visibility.Hidden;
+                serie5StackPanel.Visibility = Visibility.Hidden;
+                serie6StackPanel.Visibility = Visibility.Hidden;
+                serie7StackPanel.Visibility = Visibility.Hidden;
+                serie8StackPanel.Visibility = Visibility.Hidden;
+                serie9StackPanel.Visibility = Visibility.Hidden;
+                serie10StackPanel.Visibility = Visibility.Hidden;
+                serie11StackPanel.Visibility = Visibility.Collapsed;
+                serie12StackPanel.Visibility = Visibility.Collapsed;
+                serie13StackPanel.Visibility = Visibility.Collapsed;
+                serie14StackPanel.Visibility = Visibility.Collapsed;
+                serie15StackPanel.Visibility = Visibility.Collapsed;
+                serie16StackPanel.Visibility = Visibility.Collapsed;
+                serie17StackPanel.Visibility = Visibility.Collapsed;
+                serie18StackPanel.Visibility = Visibility.Collapsed;
+                serie19StackPanel.Visibility = Visibility.Collapsed;
+                serie20StackPanel.Visibility = Visibility.Collapsed;
             }
 
-            controlButton.IsEnabled = true;
-
-            // StackPanels Visible maken
-
-            serie1StackPanel.Visibility = Visibility.Visible;
-            serie2StackPanel.Visibility = Visibility.Hidden;
-            serie3StackPanel.Visibility = Visibility.Hidden;
-            serie4StackPanel.Visibility = Visibility.Hidden;
-            serie5StackPanel.Visibility = Visibility.Hidden;
-            serie6StackPanel.Visibility = Visibility.Hidden;
-            serie7StackPanel.Visibility = Visibility.Hidden;
-            serie8StackPanel.Visibility = Visibility.Hidden;
-            serie9StackPanel.Visibility = Visibility.Hidden;
-            serie10StackPanel.Visibility = Visibility.Hidden;
         }
 
         private void controlButton_Click(object sender, RoutedEventArgs e)
@@ -912,28 +966,24 @@ namespace Mastermind
 
                 if (colorCode1 == chosenColorCode1)
                 {
-                    //lbl.BorderBrush = Brushes.DarkRed;
                     colorPosition1 = true;
                     color1 = true;
                 }
 
                 if (colorCode2 == chosenColorCode2)
                 {
-                    //lbl.BorderBrush = Brushes.DarkRed;
                     colorPosition2 = true;
                     color2 = true;
                 }
 
                 if (colorCode3 == chosenColorCode3)
                 {
-                    //lbl.BorderBrush = Brushes.DarkRed;
                     colorPosition3 = true;
                     color3 = true;
                 }
 
                 if (colorCode4 == chosenColorCode4)
                 {
-                    //lbl.BorderBrush = Brushes.DarkRed;
                     colorPosition4 = true;
                     color4 = true;
                 }
@@ -960,20 +1010,24 @@ namespace Mastermind
                     // Gewonnen spel
 
                     attempts++;
-                    scoreLabel.Content = $"Poging {attempts}/10 Score = {points}";
+                    scoreLabel.Content = $"Poging {attempts}/{chosenAttempts} Score = {points}";
                     debugStackPanel.Visibility = Visibility.Visible;
                     gameStarted = false;
+                    dissolved = true;
 
-                    MessageBoxResult result = MessageBox.Show($"Code is gekraakt in {attempts} pogingen. Wil je nog eens?", "WINNER", MessageBoxButton.YesNo, MessageBoxImage.Information);
-                    if (result == MessageBoxResult.Yes)
+                    settingsMenuItem.IsEnabled = true;
+
+                    for(int i=0; i < highScores.Length; i++)
                     {
-                        dissolved = true;
-                        newGameButton_Click(null, null);
+                        if (highScores[i] == null)
+                        {
+                            highScores[i] = $"{player} - {attempts} pogingen - {points}/100";
+                            break;
+                        }
                     }
-                    else
-                    {
-                        this.Close();
-                    }
+
+                    MessageBox.Show($"Proficiat!\n\nJe hebt de code gekraakt in {attempts} pogingen\n\tmet {points} op 100","",MessageBoxButton.OK, MessageBoxImage.Information);
+
                     return;
                 }
                 else
@@ -1100,9 +1154,9 @@ namespace Mastermind
 
                     attempts++;
 
-                    scoreLabel.Content = $"Poging {attempts}/10 Score = {points}";
+                    scoreLabel.Content = $"Poging {attempts}/{chosenAttempts} Score = {points}";
 
-                    if (attempts < 10)
+                    if (attempts < chosenAttempts)
                     {
                         // Als attempst aangepast wordt, moet ook de StackPanels aangepast worden
                         // Hier en in timer_Tick
@@ -1110,7 +1164,7 @@ namespace Mastermind
                     }
                     else
                     {
-                        // Spel einde na 10 beurten
+                        // Spel einde na {chosenAttempts} beurten
 
                         gameStarted = false;
 
@@ -1208,6 +1262,46 @@ namespace Mastermind
                 case 9:
                     serie10StackPanel.Visibility = Visibility.Visible;
                     break;
+                case 10:
+                    serie1StackPanel.Visibility = Visibility.Collapsed;
+                    serie11StackPanel.Visibility = Visibility.Visible;
+                    break;
+                case 11:
+                    serie2StackPanel.Visibility = Visibility.Collapsed;
+                    serie12StackPanel.Visibility = Visibility.Visible;
+                    break;
+                case 12:
+                    serie3StackPanel.Visibility = Visibility.Collapsed;
+                    serie13StackPanel.Visibility = Visibility.Visible;
+                    break;
+                case 13:
+                    serie4StackPanel.Visibility = Visibility.Collapsed;
+                    serie14StackPanel.Visibility = Visibility.Visible;
+                    break;
+                case 14:
+                    serie5StackPanel.Visibility = Visibility.Collapsed;
+                    serie15StackPanel.Visibility = Visibility.Visible;
+                    break;
+                case 15:
+                    serie6StackPanel.Visibility = Visibility.Collapsed;
+                    serie16StackPanel.Visibility = Visibility.Visible;
+                    break;
+                case 16:
+                    serie7StackPanel.Visibility = Visibility.Collapsed;
+                    serie17StackPanel.Visibility = Visibility.Visible;
+                    break;
+                case 17:
+                    serie8StackPanel.Visibility = Visibility.Collapsed;
+                    serie18StackPanel.Visibility = Visibility.Visible;
+                    break;
+                case 18:
+                    serie9StackPanel.Visibility = Visibility.Collapsed;
+                    serie19StackPanel.Visibility = Visibility.Visible;
+                    break;
+                case 19:
+                    serie10StackPanel.Visibility = Visibility.Collapsed;
+                    serie20StackPanel.Visibility = Visibility.Visible;
+                    break;
             }
 
             if (debugStackPanel.Visibility == Visibility.Hidden)
@@ -1246,6 +1340,77 @@ namespace Mastermind
             }
         }
 
-    }
+        private void mastermindWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(gameStarted == true)
+            {
+                StopCountdown(); 
 
+                MessageBoxResult result = MessageBox.Show("Wilt u het spel vroegtijdig beëindigen?", $"Poging {attempts + 1}/10", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+
+                if (result == MessageBoxResult.No)
+                {
+                    if(debugStackPanel.Visibility == Visibility.Hidden)
+                    {
+                        StartCountdown();
+                    }
+                    
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        private string StartGame()
+        {
+            string name = "";
+
+            do
+            {
+                name = Interaction.InputBox("Geef je naam in", "Geef je naam in", "", 50, 50);
+            }while(name.Length == 0);
+
+            return name;
+        }
+
+        private void closeGameMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void highScoresMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            string highScoresString = "";
+
+            for (int i = 0; i < highScores.Length; i++) 
+            {
+                if (highScores[i] != null)
+                {
+                    highScoresString += highScores[i] + "\n";
+                }
+                else
+                {
+                    break;
+                }        
+            }
+            MessageBox.Show(highScoresString, "Mastermind highscores");
+        }
+
+        private void chosenattemptsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // ToDo Enkel ingave van cijfers toestaan
+                // Gaat niet met InputBox, Nieuw window met - ShowModal -
+
+            string temp = "";
+            do
+            {
+                temp = Interaction.InputBox("Aantal pogingen minimum 3, maximum 20.\nStandaard = 10", "Aantal pogingen", "", 50, 50);
+            } while (!int.TryParse(temp, out chosenAttempts) || chosenAttempts < 3 || chosenAttempts > 20);
+
+        }
+
+        private void newGameMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            newGameButton_Click(null, null);
+        }
+    }
 }
