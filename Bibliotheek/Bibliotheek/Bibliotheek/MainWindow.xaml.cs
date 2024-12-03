@@ -30,6 +30,7 @@ namespace Bibliotheek
         List<string> availableList = new List<string>();
         List<string> totalList = new List<string>();
 
+
         // Vervangen door bovenstaande lijsten
         //string[,] availableArray = new string[100, 2];   //Kolommen : Boektitel,boekcode
         //string[,] borrowedArray = new string[100, 4];    //Kolommen : Boektitel,boekcode,Vooraam,Naam
