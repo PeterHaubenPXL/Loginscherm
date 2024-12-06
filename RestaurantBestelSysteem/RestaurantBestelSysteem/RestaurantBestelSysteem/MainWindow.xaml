@@ -1,0 +1,95 @@
+﻿<Window x:Class="RestaurantBestelSysteem.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RestaurantBestelSysteem"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="500" Width="840"
+        Loaded="Window_Loaded">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Padding="5">
+            <MenuItem Click="newOrderMenuItem_Click" Header="Nieuwe bestelling" Name="newOrderMenuItem"></MenuItem>
+            <MenuItem Click="showOrderMenuItem_Click" Header="Bekijk bestellingen" Name="showOrderMenuItem"></MenuItem>
+            <MenuItem Click="statisticsMenuItem_Click" Header="Statestiek" Name="statisticsMenuItem"></MenuItem>
+        </Menu>
+        <GroupBox Name="orderGroupBox" Visibility="Visible"  Margin="10" Padding="10"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ListBox  Name="dishesListBox" Grid.Row="1" Grid.Column="1" MinWidth="300" MinHeight="360"></ListBox>
+                <StackPanel  Grid.Row="1" Grid.Column="2" Grid.RowSpan="4">
+                    <ComboBox Name="countOrdersComboBox" Width="200" Height="35" VerticalAlignment="Top" Margin="10" HorizontalContentAlignment="Center" FontSize="24"></ComboBox>
+                    <Button Name="addOrder" Content="Voeg toe aan bestelling" Margin="10" Padding= "8"></Button>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Name="inOrderGroupBox" Visibility="Collapsed"  Margin="10" Padding="10"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ListBox  Name="inOrderListBox" Grid.Row="1" Grid.Column="1" MinWidth="300" MinHeight="360"></ListBox>
+                <StackPanel  Grid.Row="1" Grid.Column="2" Grid.RowSpan="4">
+                    <Button Name="deleteOrderButton" Content="Verwijder uit bestelling" Margin="10" Padding= "8"></Button>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Name="statisticsGroupBox" Visibility="Collapsed"  Margin="10" Padding="10"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <StackPanel  Grid.Row="1" Grid.Column="1" Grid.RowSpan="4">
+                    <TextBox Name="staticsTextBox" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"  Width="450" MinHeight="300" Margin="10" Padding="10"></TextBox>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>
