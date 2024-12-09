@@ -56,7 +56,10 @@ namespace RestaurantBestelSysteem
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //orderItemsList.Add(dish,amount);
+            orderGroupBox.Visibility = Visibility.Visible;
+            inOrderGroupBox.Visibility = Visibility.Collapsed;
+            statisticsGroupBox.Visibility = Visibility.Collapsed;
+
             Orders item1 = new Orders();
 
             item1.dish = "Pizza";
@@ -81,15 +84,88 @@ namespace RestaurantBestelSysteem
             for (int i = 1; i <= 10; i++)
             {
                 countOrdersComboBox.Items.Add(i);
+                countDeleteOrdersComboBox.Items.Add(i);
             }
 
             foreach (var order in orderItemsList)
             {
                 dishesListBox.Items.Add(order.dish);
-                inOrderListBox.Items.Add(order.dish + $"\t{order.amount}");
-
             }
 
+            int X = 0;
+        }
+
+        private void addOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (countOrdersComboBox.SelectedIndex >= 0 && dishesListBox.SelectedIndex >= 0) 
+            {
+                PlaceOrder(dishesListBox.SelectedItem.ToString(), countOrdersComboBox.SelectedIndex + 1);
+            }
+
+            countOrdersComboBox.SelectedIndex = -1;
+        }
+
+        private void PlaceOrder(string selectedDish, int amountOrdered)
+        {
+            foreach (var item in orderedItemsList)
+            {
+                if (item.dish == dishesListBox.SelectedItem.ToString())
+                {
+                    item.amount += amountOrdered;
+                    RefreshOrders();
+                    return;
+                }
+            }
+
+            Orders newOrder = new Orders();
+
+            newOrder.dish = dishesListBox.SelectedItem.ToString();
+            newOrder.amount = amountOrdered;
+
+            orderedItemsList.Add(newOrder);
+
+            RefreshOrders();
+        }
+
+        private void RefreshOrders()
+        {
+            inOrderListBox.Items.Clear();
+            foreach (var item in orderedItemsList)
+            {
+                inOrderListBox.Items.Add($"{item.dish} - {item.amount}");
+            }
+        }
+
+        private void deleteOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (inOrderListBox.SelectedIndex >= 0 && countDeleteOrdersComboBox.SelectedIndex >= 0)
+            {
+                string temp = inOrderListBox.SelectedItem.ToString();
+                temp = temp.Substring(0, temp.IndexOf(" - "));
+
+                foreach (var item in orderedItemsList)
+                {
+                    if (item.dish == temp)
+                    {
+                        item.amount -= countDeleteOrdersComboBox.SelectedIndex + 1;
+                        
+                        if (item.amount <= 0)
+                        {
+                            orderedItemsList.Remove(item);
+                            RefreshOrders();
+                            return;
+                        }
+                        else
+                        {
+                            RefreshOrders();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void inOrderListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             int X = 0;
         }
     }

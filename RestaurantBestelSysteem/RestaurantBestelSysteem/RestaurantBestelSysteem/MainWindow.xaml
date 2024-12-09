@@ -29,7 +29,7 @@
             <MenuItem Click="showOrderMenuItem_Click" Header="Bekijk bestellingen" Name="showOrderMenuItem"></MenuItem>
             <MenuItem Click="statisticsMenuItem_Click" Header="Statestiek" Name="statisticsMenuItem"></MenuItem>
         </Menu>
-        <GroupBox Name="orderGroupBox" Visibility="Visible"  Margin="10" Padding="10"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4">
+        <GroupBox Name="orderGroupBox" Visibility="Collapsed"  Margin="10" Padding="10"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
@@ -46,12 +46,12 @@
                 <ListBox  Name="dishesListBox" Grid.Row="1" Grid.Column="1" MinWidth="300" MinHeight="360"></ListBox>
                 <StackPanel  Grid.Row="1" Grid.Column="2" Grid.RowSpan="4">
                     <ComboBox Name="countOrdersComboBox" Width="200" Height="35" VerticalAlignment="Top" Margin="10" HorizontalContentAlignment="Center" FontSize="24"></ComboBox>
-                    <Button Name="addOrder" Content="Voeg toe aan bestelling" Margin="10" Padding= "8"></Button>
+                    <Button Click="addOrderButton_Click"  Name="addOrderButton" Content="Voeg toe aan bestelling" Margin="10" Padding= "8"></Button>
                 </StackPanel>
             </Grid>
         </GroupBox>
 
-        <GroupBox Name="inOrderGroupBox" Visibility="Collapsed"  Margin="10" Padding="10"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4">
+        <GroupBox Name="inOrderGroupBox" Visibility="Visible"  Margin="10" Padding="10"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
@@ -65,9 +65,10 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <ListBox  Name="inOrderListBox" Grid.Row="1" Grid.Column="1" MinWidth="300" MinHeight="360"></ListBox>
+                <ListBox  SelectionChanged="inOrderListBox_SelectionChanged" Name="inOrderListBox" Grid.Row="1" Grid.Column="1" MinWidth="300" MinHeight="360"></ListBox>
                 <StackPanel  Grid.Row="1" Grid.Column="2" Grid.RowSpan="4">
-                    <Button Name="deleteOrderButton" Content="Verwijder uit bestelling" Margin="10" Padding= "8"></Button>
+                    <Button Click="deleteOrderButton_Click" Name="deleteOrderButton" Content="Verwijder uit bestelling" Margin="10" Padding= "8"></Button>
+                    <ComboBox Name="countDeleteOrdersComboBox" Width="200" Height="35" VerticalAlignment="Top" Margin="10" HorizontalContentAlignment="Center" FontSize="24"></ComboBox>
                 </StackPanel>
             </Grid>
         </GroupBox>
