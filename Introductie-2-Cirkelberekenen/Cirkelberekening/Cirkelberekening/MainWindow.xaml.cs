@@ -16,38 +16,41 @@ namespace Cirkelberekening
     /// </summary>
     public partial class MainWindow : Window
     {
-        //Global variable
-        const double PI = 3.1415;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            clearBtn_Click(null, null);
+            clearButton_Click(null, null);
         }
 
         private void calculateBtn_Click(object sender, RoutedEventArgs e)
         {
             // Input user 
-            double radius = Convert.ToDouble(radiusTxt.Text);
-            
-            // Berekeningen & Tonen
-            double surface = Math.PI * radius * radius;
-            surfaceTxt.Text = Math.Round(surface, 2).ToString() + " cm²";
-            
-            double circumference = 2 * Math.PI * radius;
-            circumferenceTxt.Text = Math.Round(circumference, 2).ToString() + " cm";
+            if (!double.TryParse(radiusTextBox.Text, out double radius))
+            {
+                MessageBox.Show("Voer een decimaal getal in.", "Foutieve ingave", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                // Berekeningen & Tonen
+                double surface = Math.PI * radius * radius;
+                surfaceTextBox.Text = Math.Round(surface, 2).ToString() + " cm²";
+
+                double circumference = 2 * Math.PI * radius;
+                circumferenceTextBox.Text = Math.Round(circumference, 2).ToString() + " cm";
+            }
         }
 
-        private void clearBtn_Click(object sender, RoutedEventArgs e)
+        private void clearButton_Click(object sender, RoutedEventArgs e)
         {
-            circumferenceTxt.Text = "0 cm";
-            radiusTxt.Text = "0 cm";
-            surfaceTxt.Text = "0 cm²";
+            circumferenceTextBox.Text = "0 cm";
+            radiusTextBox.Text = "0";
+            surfaceTextBox.Text = "0 cm²";
 
             // Focus Input Txt-field
-            radiusTxt.Focus();
-            radiusTxt.SelectAll();
+            radiusTextBox.Focus();
+            radiusTextBox.SelectAll();
 
         }
 

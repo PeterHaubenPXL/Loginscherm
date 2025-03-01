@@ -1,0 +1,25 @@
+﻿<Window x:Class="Monitoraat.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Monitoraat"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <StackPanel>
+            <Button Name="Oef 01" Content="Oef01" Click="Oef01_Click"></Button>
+            <Button Name="Oef 02" Content="Oef02" Click="Oef02_Click"></Button>
+            <Button Name="Oef 03" Content="Oef03" Click="Oef03_Click"></Button>
+            <Button Name="Oef 04" Content="Oef04" Click="Oef04_Click"></Button>
+            <Button Name="Oef 05" Content="Oef05" Click="Oef05_Click"></Button>
+            <Button Name="Oef 06" Content="Oef06" Click="Oef06_Click"></Button>
+            <Button Name="Oef 07" Content="Oef07" Click="Oef07_Click"></Button>
+            <Button Name="Oef 08" Content="Oef08" Click="Oef08_Click"></Button>
+            <Button Name="Oef 09" Content="Oef09" Click="Oef09_Click"></Button>
+            <Button Name="Oef 10" Content="Oef10" Click="Oef10_Click"></Button>
+            <Button Name="Oef 11" Content="Oef11" Click="Oef11_Click"></Button>
+            <Button Name="Oef 12" Content="Oef12" Click="Oef12_Click"></Button>
+        </StackPanel>
+    </Grid>
+</Window>

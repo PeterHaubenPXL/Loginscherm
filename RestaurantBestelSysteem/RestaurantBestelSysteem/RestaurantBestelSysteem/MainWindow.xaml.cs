@@ -148,7 +148,9 @@ namespace RestaurantBestelSysteem
                     if (item.dish == temp)
                     {
                         item.amount -= countDeleteOrdersComboBox.SelectedIndex + 1;
-                        
+
+                        countDeleteOrdersComboBox.SelectedIndex = -1;
+
                         if (item.amount <= 0)
                         {
                             orderedItemsList.Remove(item);
@@ -168,5 +170,6 @@ namespace RestaurantBestelSysteem
         {
             int X = 0;
         }
+
     }
 }

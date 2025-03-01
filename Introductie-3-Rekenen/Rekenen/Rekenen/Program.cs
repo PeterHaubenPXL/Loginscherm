@@ -17,9 +17,8 @@ Double subtract = number1 - number2;
 Console.WriteLine(subtract);
 
 Console.WriteLine();
-Console.Write("Het product = ");
 Double multiplication = number1 * number2;
-Console.WriteLine(multiplication);
+Console.Write($"Het product = {multiplication}");
 
 Console.WriteLine();
 Console.Write("Het quotient = ");
@@ -28,4 +27,6 @@ Console.WriteLine(division);
 
 Console.WriteLine();
 Console.WriteLine("------------------------");
+
+Console.WriteLine("\nDruk op enter om af te sluiten");
 Console.Read();
